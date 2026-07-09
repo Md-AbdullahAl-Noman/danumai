@@ -208,7 +208,7 @@ function VentureCard({ v }: { v: (typeof ventures)[number] }) {
       style={{
         borderColor: `${v.accent}33`,
         background: `radial-gradient(120% 90% at 100% 0%, ${v.accent}22, transparent 55%), linear-gradient(160deg, ${v.accent}14, transparent 46%), var(--color-surface)`,
-        boxShadow: `0 44px 110px -42px rgba(0,0,0,0.9), 0 1px 0 0 rgba(241,236,228,0.05) inset, 0 0 0 1px ${v.accent}1a inset`,
+        boxShadow: `0 44px 110px -42px var(--app-venture-drop), 0 1px 0 0 var(--app-card-inset) inset, 0 0 0 1px ${v.accent}1a inset`,
       }}
       className="group relative grid h-full grid-cols-1 gap-4 overflow-hidden rounded-3xl border p-4 sm:gap-6 sm:p-5 md:grid-cols-2 md:gap-8 md:p-6"
     >

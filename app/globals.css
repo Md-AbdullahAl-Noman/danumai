@@ -1,34 +1,135 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Surfaces — a deep, warm near-black base rising through elevated tiers. */
-  --color-ink: #0b0a08;
-  --color-ink-2: #131009;
-  --color-ink-3: #1a1712;
-  --color-surface: #14110c;
-  --color-surface-2: #1b1712;
-  --color-paper: #f1ece4;
-  --color-mist: #a49d92;
-  --color-faint: #726c62;
+  /* Utilities resolve to themeable app tokens (defined per-theme in :root
+     below). Because @theme inline substitutes the token's *value* — here a
+     var() — into every utility, flipping the --app-* layer at runtime
+     re-themes bg-ink, text-paper, text-copper, and friends in one move. */
+  --color-ink: var(--app-ink);
+  --color-ink-2: var(--app-ink-2);
+  --color-ink-3: var(--app-ink-3);
+  --color-surface: var(--app-surface);
+  --color-surface-2: var(--app-surface-2);
+  --color-paper: var(--app-paper);
+  --color-mist: var(--app-mist);
+  --color-faint: var(--app-faint);
 
-  /* Primary accent — refined copper/gold. */
-  --color-copper: #dda05a;
-  --color-copper-soft: #efc78c;
-  --color-copper-deep: #a86f2e;
+  --color-copper: var(--app-copper);
+  --color-copper-soft: var(--app-copper-soft);
+  --color-copper-deep: var(--app-copper-deep);
 
-  /* Supporting accents for multi-toned card treatments. */
-  --color-terracotta: #d98363;
-  --color-sage: #7bb6a1;
-  --color-azure: #7c96c9;
+  --color-terracotta: var(--app-terracotta);
+  --color-sage: var(--app-sage);
+  --color-azure: var(--app-azure);
 
-  --color-hairline: rgba(241, 236, 228, 0.08);
-  --color-hairline-strong: rgba(241, 236, 228, 0.14);
+  --color-hairline: var(--app-hairline);
+  --color-hairline-strong: var(--app-hairline-strong);
   --font-sans: var(--font-inter);
   --font-display: var(--font-fraunces);
 }
 
+/* ============================ THEME TOKENS ============================
+   DARK — the original house palette: a deep, warm near-black base rising
+   through elevated tiers, lit by copper. This is the default. */
 :root {
   color-scheme: dark;
+
+  --app-ink: #0b0a08;
+  --app-ink-2: #131009;
+  --app-ink-3: #1a1712;
+  --app-surface: #14110c;
+  --app-surface-2: #1b1712;
+  --app-paper: #f1ece4;
+  --app-mist: #a49d92;
+  --app-faint: #726c62;
+
+  --app-copper: #dda05a;
+  --app-copper-soft: #efc78c;
+  --app-copper-deep: #a86f2e;
+
+  --app-terracotta: #d98363;
+  --app-sage: #7bb6a1;
+  --app-azure: #7c96c9;
+
+  --app-hairline: rgba(241, 236, 228, 0.08);
+  --app-hairline-strong: rgba(241, 236, 228, 0.14);
+
+  /* surface treatments referenced by the utility layer below */
+  --app-body:
+    radial-gradient(
+      120% 80% at 50% -10%,
+      rgba(221, 160, 90, 0.05),
+      transparent 60%
+    ),
+    #0b0a08;
+  --app-selection: rgba(217, 154, 78, 0.28);
+  --app-grid-line: rgba(241, 236, 228, 0.045);
+  --app-grain-opacity: 0.035;
+  --app-card-sheen: rgba(241, 236, 228, 0.035);
+  --app-card-inset: rgba(241, 236, 228, 0.04);
+  --app-card-inset-strong: rgba(241, 236, 228, 0.06);
+  --app-card-shadow: 0 24px 60px -32px rgba(0, 0, 0, 0.85);
+  --app-card-shadow-hover:
+    0 34px 80px -34px rgba(0, 0, 0, 0.9),
+    0 0 44px -18px rgba(221, 160, 90, 0.28);
+  --app-venture-drop: rgba(0, 0, 0, 0.9);
+  --app-field-bg: rgba(237, 232, 224, 0.03);
+  --app-field-bg-focus: rgba(237, 232, 224, 0.05);
+  --app-field-border-hover: rgba(237, 232, 224, 0.16);
+}
+
+/* LIGHT — a warm, colorful editorial daylight. Cream paper, espresso ink,
+   a deeper copper that keeps text legible, and more saturated supporting
+   accents so the venture cards and auroras stay vivid on a bright canvas. */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --app-ink: #faf5ee;
+  --app-ink-2: #f3eadb;
+  --app-ink-3: #ebe1d2;
+  --app-surface: #fffdf9;
+  --app-surface-2: #f6efe4;
+  --app-paper: #2a2017;
+  --app-mist: #6a5f51;
+  --app-faint: #9a8b78;
+
+  --app-copper: #ad5a12;
+  --app-copper-soft: #c46e1a;
+  --app-copper-deep: #7c3f0c;
+
+  --app-terracotta: #c9502a;
+  --app-sage: #2e977c;
+  --app-azure: #3a5bb0;
+
+  --app-hairline: rgba(60, 42, 22, 0.12);
+  --app-hairline-strong: rgba(60, 42, 22, 0.2);
+
+  --app-body:
+    radial-gradient(
+      120% 80% at 50% -8%,
+      rgba(221, 160, 90, 0.18),
+      transparent 56%
+    ),
+    radial-gradient(
+      90% 70% at 100% 105%,
+      rgba(58, 91, 176, 0.07),
+      transparent 60%
+    ),
+    #faf5ee;
+  --app-selection: rgba(173, 90, 18, 0.22);
+  --app-grid-line: rgba(60, 42, 22, 0.05);
+  --app-grain-opacity: 0.02;
+  --app-card-sheen: rgba(255, 255, 255, 0.7);
+  --app-card-inset: rgba(255, 255, 255, 0.85);
+  --app-card-inset-strong: rgba(255, 255, 255, 0.95);
+  --app-card-shadow: 0 20px 48px -30px rgba(70, 45, 15, 0.28);
+  --app-card-shadow-hover:
+    0 28px 64px -32px rgba(70, 45, 15, 0.32),
+    0 0 40px -20px rgba(173, 90, 18, 0.3);
+  --app-venture-drop: rgba(70, 45, 15, 0.2);
+  --app-field-bg: rgba(60, 42, 22, 0.035);
+  --app-field-bg-focus: rgba(60, 42, 22, 0.05);
+  --app-field-border-hover: rgba(60, 42, 22, 0.18);
 }
 
 html {
@@ -36,18 +137,30 @@ html {
 }
 
 body {
-  background:
-    radial-gradient(120% 80% at 50% -10%, rgba(221, 160, 90, 0.05), transparent 60%),
-    #0b0a08;
-  color: #f1ece4;
+  background: var(--app-body);
+  color: var(--app-paper);
   font-family: var(--font-inter), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
 }
 
+/* Smooth cross-fade of colors while switching themes. The `.theme-transition`
+   class is added to <html> for ~half a second by the theme toggle, so we pay
+   the transition cost only during the switch — never during normal interaction
+   (which would fight each element's own motion). */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition-property:
+    background-color, border-color, color, box-shadow, fill, stroke !important;
+  transition-duration: 0.45s !important;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
 ::selection {
-  background: rgba(217, 154, 78, 0.28);
-  color: #f5f0e8;
+  background: var(--app-selection);
+  color: var(--app-paper);
 }
 
 /* ---- film grain ---- */
@@ -58,24 +171,39 @@ body {
   z-index: 200;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.035;
+  opacity: var(--app-grain-opacity);
   animation: grain-shift 9s steps(6) infinite;
 }
 
 @keyframes grain-shift {
-  0%, 100% { transform: translate(0, 0); }
-  20% { transform: translate(-2%, 1%); }
-  40% { transform: translate(1%, -2%); }
-  60% { transform: translate(-1%, 2%); }
-  80% { transform: translate(2%, -1%); }
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-2%, 1%);
+  }
+  40% {
+    transform: translate(1%, -2%);
+  }
+  60% {
+    transform: translate(-1%, 2%);
+  }
+  80% {
+    transform: translate(2%, -1%);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .grain::before { animation: none; }
+  .grain::before {
+    animation: none;
+  }
 }
 
 /* ---- hairline utility ---- */
-.hairline { border-color: var(--color-hairline); }
+.hairline {
+  border-color: var(--color-hairline);
+}
 
 /* ---- link underline grow ---- */
 .link-line {
@@ -132,8 +260,16 @@ body {
 /* ---- ambient hero glow ---- */
 .hero-glow {
   background:
-    radial-gradient(60% 50% at 70% 20%, rgba(217, 154, 78, 0.10), transparent 70%),
-    radial-gradient(45% 40% at 20% 80%, rgba(217, 154, 78, 0.06), transparent 70%);
+    radial-gradient(
+      60% 50% at 70% 20%,
+      rgba(217, 154, 78, 0.1),
+      transparent 70%
+    ),
+    radial-gradient(
+      45% 40% at 20% 80%,
+      rgba(217, 154, 78, 0.06),
+      transparent 70%
+    );
 }
 
 /* ---- aurora field: slow, blurred, drifting color clouds ---- */
@@ -145,32 +281,69 @@ body {
   filter: blur(64px) saturate(125%);
   opacity: 0.55;
   background:
-    radial-gradient(32% 42% at 22% 28%, rgba(221, 160, 90, 0.34), transparent 62%),
-    radial-gradient(28% 38% at 80% 18%, rgba(217, 131, 99, 0.24), transparent 60%),
-    radial-gradient(38% 46% at 68% 82%, rgba(123, 182, 161, 0.18), transparent 62%),
-    radial-gradient(30% 34% at 12% 82%, rgba(124, 150, 201, 0.14), transparent 60%);
+    radial-gradient(
+      32% 42% at 22% 28%,
+      rgba(221, 160, 90, 0.34),
+      transparent 62%
+    ),
+    radial-gradient(
+      28% 38% at 80% 18%,
+      rgba(217, 131, 99, 0.24),
+      transparent 60%
+    ),
+    radial-gradient(
+      38% 46% at 68% 82%,
+      rgba(123, 182, 161, 0.18),
+      transparent 62%
+    ),
+    radial-gradient(
+      30% 34% at 12% 82%,
+      rgba(124, 150, 201, 0.14),
+      transparent 60%
+    );
   animation: aurora-drift 24s ease-in-out infinite alternate;
 }
 @keyframes aurora-drift {
-  0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
-  50% { transform: translate3d(2.5%, -2%, 0) scale(1.1) rotate(2deg); }
-  100% { transform: translate3d(-2%, 1.5%, 0) scale(1.05) rotate(-1.5deg); }
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(2.5%, -2%, 0) scale(1.1) rotate(2deg);
+  }
+  100% {
+    transform: translate3d(-2%, 1.5%, 0) scale(1.05) rotate(-1.5deg);
+  }
+}
+/* On the bright canvas the same clouds read stronger — dial them back a touch
+   and push saturation so they stay vivid without muddying the paper. */
+:root[data-theme="light"] .aurora {
+  opacity: 0.4;
+  filter: blur(72px) saturate(150%);
 }
 
 /* ---- fine background grid, faded at the edges ---- */
 .bg-grid {
   background-image:
-    linear-gradient(rgba(241, 236, 228, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(241, 236, 228, 0.045) 1px, transparent 1px);
+    linear-gradient(var(--app-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--app-grid-line) 1px, transparent 1px);
   background-size: 62px 62px;
-  -webkit-mask-image: radial-gradient(72% 62% at 50% 42%, #000 0%, transparent 82%);
+  -webkit-mask-image: radial-gradient(
+    72% 62% at 50% 42%,
+    #000 0%,
+    transparent 82%
+  );
   mask-image: radial-gradient(72% 62% at 50% 42%, #000 0%, transparent 82%);
 }
 
 /* ---- accent word: warm gradient fill for emphasized display words ---- */
 .accent-word {
   font-style: italic;
-  background: linear-gradient(120deg, var(--color-copper-soft), var(--color-copper) 55%, var(--color-terracotta));
+  background: linear-gradient(
+    120deg,
+    var(--color-copper-soft),
+    var(--color-copper) 55%,
+    var(--color-terracotta)
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -203,11 +376,11 @@ body {
   border-radius: 1.25rem;
   border: 1px solid var(--color-hairline);
   background:
-    linear-gradient(180deg, rgba(241, 236, 228, 0.035), transparent 42%),
+    linear-gradient(180deg, var(--app-card-sheen), transparent 42%),
     var(--color-surface);
   box-shadow:
-    0 1px 0 0 rgba(241, 236, 228, 0.04) inset,
-    0 24px 60px -32px rgba(0, 0, 0, 0.85);
+    0 1px 0 0 var(--app-card-inset) inset,
+    var(--app-card-shadow);
   transition:
     border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
@@ -218,9 +391,8 @@ body {
   transform: translateY(-4px);
   border-color: rgba(221, 160, 90, 0.32);
   box-shadow:
-    0 1px 0 0 rgba(241, 236, 228, 0.06) inset,
-    0 34px 80px -34px rgba(0, 0, 0, 0.9),
-    0 0 44px -18px rgba(221, 160, 90, 0.28);
+    0 1px 0 0 var(--app-card-inset-strong) inset,
+    var(--app-card-shadow-hover);
 }
 /* accent hairline that lights the top edge of a card on hover */
 .card-topline::before {
@@ -262,23 +434,26 @@ body {
   width: 100%;
   border-radius: 0.75rem;
   border: 1px solid var(--color-hairline);
-  background: rgba(237, 232, 224, 0.03);
+  background: var(--app-field-bg);
   padding: 0.8rem 1rem;
   font-size: 0.875rem;
   color: var(--color-paper);
-  transition: border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
+  transition:
+    border-color 0.4s ease,
+    box-shadow 0.4s ease,
+    background 0.4s ease;
 }
 .field::placeholder {
   color: var(--color-faint);
 }
 .field:hover {
-  border-color: rgba(237, 232, 224, 0.16);
+  border-color: var(--app-field-border-hover);
 }
 .field:focus {
   outline: none;
   border-color: rgba(217, 154, 78, 0.5);
   box-shadow: 0 0 0 4px rgba(217, 154, 78, 0.08);
-  background: rgba(237, 232, 224, 0.05);
+  background: var(--app-field-bg-focus);
 }
 
 /* ---- ticker marquee ---- */
@@ -289,8 +464,12 @@ body {
   animation-play-state: paused;
 }
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-33.333%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-33.333%);
+  }
 }
 
 /* ---- open-role pulse ---- */
@@ -298,12 +477,21 @@ body {
   animation: pulse-dot 2.4s ease-in-out infinite;
 }
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(217, 154, 78, 0.35); }
-  50% { opacity: 0.7; box-shadow: 0 0 0 5px rgba(217, 154, 78, 0); }
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(217, 154, 78, 0.35);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 0 5px rgba(217, 154, 78, 0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }

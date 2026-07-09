@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import MagneticButton from "@/components/ui/MagneticButton";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 const links = [
   { href: "/#ventures", label: "Ventures" },
@@ -149,6 +150,8 @@ export default function Nav() {
               ))}
             </ul>
           </div>
+
+          <ThemeToggle />
 
           <MagneticButton
             href="/contact"
