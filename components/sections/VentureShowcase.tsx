@@ -24,7 +24,7 @@ const ventures = [
       "A vertical micro-drama platform built for how 300 million people actually watch — serialized stories, episode by episode, in their own language.",
     status: "In development",
     features: ["Vertical serials", "Episode unlocks", "Creator tooling", "Offline-first"],
-    accent: "#d97706", // warm amber
+    accent: "#e11d48", // crimson rose
     Art: ReelsArt,
   },
   {
@@ -35,7 +35,7 @@ const ventures = [
       "The content engine behind our platforms. We write, produce, and own the serials we stream — no licensing, no middlemen, full creative control.",
     status: "In development",
     features: ["Writers' room", "Vertical-first production", "Owned IP", "Fast cycles"],
-    accent: "#e0402f", // signal coral
+    accent: "#7c3aed", // creative violet
     Art: StudiosArt,
   },
   {
