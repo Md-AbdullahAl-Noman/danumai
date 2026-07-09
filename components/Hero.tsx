@@ -17,13 +17,13 @@ const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 export default function Hero() {
   const reduce = useReducedMotion();
   // The breathing light field follows the theme: copper spotlights in the
-  // dark house theme; royal indigo and rose magenta beams on the prism
-  // light canvas.
+  // dark house theme; golden spotlight and rose magenta beams on the warm
+  // prism light canvas.
   const { theme } = useTheme();
   const orbA =
-    theme === "light" ? "rgba(67,64,189,0.14)" : "rgba(217,154,78,0.11)";
+    theme === "light" ? "rgba(217,143,31,0.20)" : "rgba(217,154,78,0.11)";
   const orbB =
-    theme === "light" ? "rgba(217,54,127,0.10)" : "rgba(217,154,78,0.06)";
+    theme === "light" ? "rgba(217,54,127,0.14)" : "rgba(217,154,78,0.06)";
 
   // Mouse-driven ambient parallax (springed so it settles, never snaps).
   const mx = useMotionValue(0);

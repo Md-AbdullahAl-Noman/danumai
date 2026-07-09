@@ -91,93 +91,114 @@
   --app-hero-glow-b: rgba(217, 154, 78, 0.06);
 }
 
-/* LIGHT — "Cinematic Prism": a luminous lavender-ivory canvas saturated
-   with cinema color — colored shadows, tinted hairlines, section washes.
-   Ink is a deep indigo-black, surfaces are softly tinted frost, and the
-   accent roles refract into prism families — Royal Indigo leads (CTAs,
-   focus, glows), with Cinema Coral, Emerald Studio, and Electric Cyan
-   carrying the supporting roles. Golden Spotlight, Soft Peach, Deep
-   Violet, and Rose Magenta live in the ambient light: body washes,
-   auroras, gradient words, and pulses. */
+/* LIGHT — "Daylight Studio": a cool, luminous premium daylight — the
+   architectural counterpart to the warm copper dark house. Everything is
+   built on three ideas:
+
+     1. The canvas is COOL PORCELAIN (#e7eaf1) — a real blue-grey, not
+        white. White cards then lift off it with obvious separation, so
+        the page never reads as one flat white sheet.
+     2. Type is near-black cool INK (#181920) for crisp, expensive
+        legibility — the single biggest "premium vs. cheap" signal.
+     3. Color comes from LIGHT, not from beige surfaces: an indigo crown
+        overhead, and warm/cool jewel pools in the corners, with each
+        section carrying its own colored wash. Cool neutrals + saturated
+        colored light is the combination that reads as costly.
+
+   Depth ladder (deepest → lightest):
+     canvas  #e7eaf1   the porcelain everything sits on
+     ink/2/3 #e2e6ee → #d1d8e4   recessed pills, chrome, inner tiles
+     surface #f8fafd   LIFTED bright card, floated on layered shadow */
 :root[data-theme="light"] {
   color-scheme: light;
 
-  --app-ink: #fbfaff;
-  --app-ink-2: #f3f1fd;
-  --app-ink-3: #eae7fa;
-  --app-surface: #ffffff;
-  --app-surface-2: #f5f3fd;
-  --app-paper: #16142b;
-  --app-mist: #524e70;
-  --app-faint: #8a86a8;
+  /* recessed background bands — cool porcelain → slate, never white */
+  --app-ink: #e2e6ee;
+  --app-ink-2: #dae0ea;
+  --app-ink-3: #d1d8e4;
+  /* lifted panels — bright cool porcelain that reads as an elevated card */
+  --app-surface: #f8fafd;
+  --app-surface-2: #eef2f8;
+  /* foreground — near-black cool ink */
+  --app-paper: #181920;
+  --app-mist: #565b66;
+  --app-faint: #8a909c;
 
-  /* primary accent role → Royal Indigo, flanked by Deep Violet */
-  --app-copper: #4340bd;
-  --app-copper-soft: #6d28d9;
-  --app-copper-deep: #2e2b8f;
+  /* primary accent role → Electric Indigo, flanked by Violet */
+  --app-copper: #4f46e5;
+  --app-copper-soft: #7c3aed;
+  --app-copper-deep: #3730a3;
 
-  /* supporting roles → Cinema Coral, Emerald Studio, Electric Cyan */
-  --app-terracotta: #e04435;
-  --app-sage: #0f9168;
-  --app-azure: #0a84b8;
+  /* supporting roles → Signal Coral, Studio Teal, Electric Cyan */
+  --app-terracotta: #e0402f;
+  --app-sage: #0d9488;
+  --app-azure: #0e7fb8;
 
-  /* hairlines carry a whisper of indigo so even borders feel lit */
-  --app-hairline: rgba(67, 64, 189, 0.14);
-  --app-hairline-strong: rgba(67, 64, 189, 0.24);
+  /* hairlines are cool ink — crisp, so surfaces read as cleanly stacked */
+  --app-hairline: rgba(24, 25, 32, 0.09);
+  --app-hairline-strong: rgba(24, 25, 32, 0.15);
 
-  /* luminous lavender-ivory canvas, generously edge-lit: royal indigo
-     pouring from above, soft peach and rose magenta from the right,
-     electric cyan rising from the left — the prism is always on */
+  /* cool porcelain canvas lit from above by indigo, with jewel pools in
+     the corners: rose magenta right, studio teal low-left, warm peach
+     low-right — the color lives in the light, the base stays cool */
   --app-body:
     radial-gradient(
-      110% 70% at 50% -8%,
-      rgba(67, 64, 189, 0.13),
-      transparent 55%
-    ),
-    radial-gradient(
-      80% 60% at 100% 105%,
-      rgba(255, 158, 107, 0.16),
-      transparent 58%
-    ),
-    radial-gradient(
-      60% 50% at 100% 40%,
-      rgba(217, 54, 127, 0.07),
+      120% 80% at 50% -12%,
+      rgba(79, 70, 229, 0.12),
       transparent 60%
     ),
     radial-gradient(
-      70% 55% at 0% 100%,
-      rgba(9, 149, 198, 0.12),
+      66% 58% at 100% 18%,
+      rgba(217, 54, 127, 0.08),
+      transparent 60%
+    ),
+    radial-gradient(
+      78% 58% at 0% 100%,
+      rgba(13, 148, 136, 0.09),
+      transparent 58%
+    ),
+    radial-gradient(
+      72% 55% at 100% 102%,
+      rgba(224, 128, 84, 0.1),
       transparent 55%
     ),
-    #fbfaff;
-  --app-selection: rgba(109, 40, 217, 0.2);
-  --app-grid-line: rgba(67, 64, 189, 0.07);
+    #e7eaf1;
+  --app-selection: rgba(79, 70, 229, 0.18);
+  --app-grid-line: rgba(24, 25, 32, 0.05);
   --app-grain-opacity: 0.02;
-  --app-card-sheen: rgba(255, 255, 255, 0.85);
-  --app-card-inset: rgba(255, 255, 255, 0.9);
-  --app-card-inset-strong: rgba(255, 255, 255, 0.95);
-  /* shadows are cast in color, not grey */
-  --app-card-shadow: 0 24px 56px -30px rgba(67, 64, 189, 0.28);
-  --app-card-shadow-hover:
-    0 30px 68px -30px rgba(67, 64, 189, 0.34),
-    0 0 52px -16px rgba(217, 54, 127, 0.28);
-  --app-venture-drop: rgba(67, 40, 180, 0.24);
-  --app-field-bg: rgba(67, 64, 189, 0.045);
-  --app-field-bg-focus: rgba(67, 64, 189, 0.07);
-  --app-field-border-hover: rgba(67, 64, 189, 0.32);
 
-  /* interaction light shifts from copper to the prism families */
-  --app-focus-ring: rgba(109, 40, 217, 0.65);
-  --app-cta-glow: rgba(109, 40, 217, 0.5);
-  --app-cta-glow-hover: rgba(217, 54, 127, 0.55);
-  --app-card-border-hover: rgba(109, 40, 217, 0.4);
-  --app-topline: rgba(109, 40, 217, 0.6);
-  --app-cursor-glow: rgba(109, 40, 217, 0.09);
-  --app-field-focus-border: rgba(109, 40, 217, 0.55);
-  --app-field-focus-ring: rgba(109, 40, 217, 0.12);
+  /* card treatment — a gentle top-light sheen and, crucially, a LAYERED
+     shadow stack (contact + mid + ambient) so cards float with real depth
+     instead of sitting flat. Hover adds an indigo halo. */
+  --app-card-sheen: rgba(255, 255, 255, 0.7);
+  --app-card-inset: rgba(255, 255, 255, 0.9);
+  --app-card-inset-strong: rgba(255, 255, 255, 1);
+  --app-card-shadow:
+    0 1px 2px rgba(23, 25, 38, 0.05),
+    0 10px 24px -10px rgba(23, 25, 38, 0.12),
+    0 30px 56px -28px rgba(23, 25, 38, 0.16);
+  --app-card-shadow-hover:
+    0 2px 4px rgba(23, 25, 38, 0.06),
+    0 16px 34px -10px rgba(23, 25, 38, 0.16),
+    0 42px 76px -30px rgba(23, 25, 38, 0.2),
+    0 0 50px -14px rgba(79, 70, 229, 0.3);
+  --app-venture-drop: rgba(23, 25, 38, 0.2);
+  --app-field-bg: rgba(24, 25, 32, 0.03);
+  --app-field-bg-focus: rgba(24, 25, 32, 0.05);
+  --app-field-border-hover: rgba(24, 25, 32, 0.22);
+
+  /* interaction light — indigo lead, magenta on the warmest hovers */
+  --app-focus-ring: rgba(79, 70, 229, 0.6);
+  --app-cta-glow: rgba(79, 70, 229, 0.42);
+  --app-cta-glow-hover: rgba(217, 54, 127, 0.48);
+  --app-card-border-hover: rgba(79, 70, 229, 0.35);
+  --app-topline: rgba(79, 70, 229, 0.5);
+  --app-cursor-glow: rgba(79, 70, 229, 0.08);
+  --app-field-focus-border: rgba(79, 70, 229, 0.5);
+  --app-field-focus-ring: rgba(79, 70, 229, 0.12);
   --app-pulse: rgba(217, 54, 127, 0.4);
-  --app-hero-glow-a: rgba(67, 64, 189, 0.16);
-  --app-hero-glow-b: rgba(217, 54, 127, 0.11);
+  --app-hero-glow-a: rgba(79, 70, 229, 0.16);
+  --app-hero-glow-b: rgba(217, 54, 127, 0.1);
 }
 
 html {
@@ -252,20 +273,21 @@ body {
 .hairline {
   border-color: var(--color-hairline);
 }
-/* Light theme: full-bleed section dividers become prism hairlines — a
-   thin band of refracted color between every act. Only straight edges
-   (sections, footer) get this; rounded elements keep plain hairlines. */
+/* Light theme: full-bleed section dividers become a refined refracted
+   hairline — a cool jewel sweep that fades in from the edges so it reads
+   as a whisper of light between acts, not a loud rainbow rule. Only
+   straight edges (sections, footer) get this; rounded elements keep
+   plain hairlines. */
 :root[data-theme="light"] section.border-t.hairline,
 :root[data-theme="light"] footer.border-t.hairline {
   border-image: linear-gradient(
       90deg,
-      rgba(67, 64, 189, 0.4),
-      rgba(109, 40, 217, 0.45) 18%,
-      rgba(217, 54, 127, 0.45) 36%,
-      rgba(239, 86, 72, 0.45) 52%,
-      rgba(217, 143, 31, 0.45) 68%,
-      rgba(16, 157, 114, 0.45) 84%,
-      rgba(9, 149, 198, 0.4)
+      transparent,
+      rgba(79, 70, 229, 0.4) 22%,
+      rgba(124, 58, 237, 0.42) 40%,
+      rgba(192, 38, 211, 0.4) 58%,
+      rgba(13, 148, 136, 0.38) 80%,
+      transparent
     )
     1;
 }
@@ -278,12 +300,12 @@ body {
   background-image:
     radial-gradient(
       90% 70% at 15% 0%,
-      rgba(67, 64, 189, 0.12),
+      rgba(67, 64, 189, 0.18),
       transparent 55%
     ),
     radial-gradient(
       70% 60% at 95% 100%,
-      rgba(217, 54, 127, 0.09),
+      rgba(217, 54, 127, 0.14),
       transparent 60%
     );
 }
@@ -291,12 +313,12 @@ body {
   background-image:
     radial-gradient(
       90% 70% at 85% 0%,
-      rgba(217, 143, 31, 0.14),
+      rgba(217, 143, 31, 0.22),
       transparent 55%
     ),
     radial-gradient(
       70% 60% at 5% 100%,
-      rgba(255, 158, 107, 0.12),
+      rgba(255, 158, 107, 0.2),
       transparent 60%
     );
 }
@@ -304,12 +326,12 @@ body {
   background-image:
     radial-gradient(
       90% 70% at 10% 10%,
-      rgba(9, 149, 198, 0.12),
+      rgba(9, 149, 198, 0.18),
       transparent 55%
     ),
     radial-gradient(
       70% 60% at 90% 95%,
-      rgba(16, 157, 114, 0.09),
+      rgba(16, 157, 114, 0.14),
       transparent 60%
     );
 }
@@ -317,12 +339,12 @@ body {
   background-image:
     radial-gradient(
       90% 70% at 90% 0%,
-      rgba(16, 157, 114, 0.12),
+      rgba(16, 157, 114, 0.18),
       transparent 55%
     ),
     radial-gradient(
       70% 55% at 10% 100%,
-      rgba(9, 149, 198, 0.09),
+      rgba(9, 149, 198, 0.14),
       transparent 60%
     );
 }
@@ -330,12 +352,12 @@ body {
   background-image:
     radial-gradient(
       80% 70% at 50% 0%,
-      rgba(109, 40, 217, 0.12),
+      rgba(109, 40, 217, 0.17),
       transparent 55%
     ),
     radial-gradient(
       70% 60% at 85% 100%,
-      rgba(217, 54, 127, 0.1),
+      rgba(217, 54, 127, 0.15),
       transparent 60%
     );
 }
@@ -343,12 +365,12 @@ body {
   background-image:
     radial-gradient(
       90% 70% at 20% 0%,
-      rgba(239, 86, 72, 0.11),
+      rgba(239, 86, 72, 0.17),
       transparent 55%
     ),
     radial-gradient(
       70% 60% at 80% 100%,
-      rgba(255, 158, 107, 0.14),
+      rgba(255, 158, 107, 0.22),
       transparent 60%
     );
 }
@@ -462,36 +484,37 @@ body {
     transform: translate3d(-2%, 1.5%, 0) scale(1.05) rotate(-1.5deg);
   }
 }
-/* On the white canvas the aurora becomes the full prism: golden spotlight,
-   rose magenta, emerald studio, electric cyan, and deep violet drifting
-   together — dialed back and blurred wide so the paper stays gallery-white. */
+/* On the cool porcelain canvas the aurora is jewel light drifting behind
+   the hero — indigo and violet leading, studio teal and electric cyan
+   cooling the low corners, one warm magenta pool for contrast. Blurred
+   wide and dialed back so the porcelain stays luminous, not muddy. */
 :root[data-theme="light"] .aurora {
-  opacity: 0.55;
-  filter: blur(72px) saturate(165%);
+  opacity: 0.5;
+  filter: blur(76px) saturate(150%);
   background:
     radial-gradient(
-      32% 42% at 22% 28%,
-      rgba(217, 143, 31, 0.3),
+      32% 42% at 22% 26%,
+      rgba(79, 70, 229, 0.28),
       transparent 62%
     ),
     radial-gradient(
       28% 38% at 80% 18%,
-      rgba(217, 54, 127, 0.22),
+      rgba(217, 54, 127, 0.2),
       transparent 60%
     ),
     radial-gradient(
       38% 46% at 68% 82%,
-      rgba(16, 157, 114, 0.2),
+      rgba(13, 148, 136, 0.2),
       transparent 62%
     ),
     radial-gradient(
       30% 34% at 12% 82%,
-      rgba(9, 149, 198, 0.18),
+      rgba(14, 127, 184, 0.18),
       transparent 60%
     ),
     radial-gradient(
       26% 32% at 48% 52%,
-      rgba(109, 40, 217, 0.14),
+      rgba(124, 58, 237, 0.16),
       transparent 60%
     );
 }
@@ -523,15 +546,15 @@ body {
   background-clip: text;
   color: transparent;
 }
-/* In daylight the emphasized words refract: deep violet through rose
-   magenta and cinema coral into golden spotlight. */
+/* In daylight the emphasized words refract from electric indigo through
+   violet into rose magenta — a cool-led jewel sweep against the ink. */
 :root[data-theme="light"] .accent-word {
   background: linear-gradient(
     115deg,
-    #6d28d9,
-    #d9367f 38%,
-    #ef5648 66%,
-    #c77c0a
+    #4f46e5,
+    #7c3aed 42%,
+    #c026d3 72%,
+    #d9367f
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -549,7 +572,7 @@ body {
    is a background-image, so the button's bg-copper hover states keep
    working underneath without a flash. */
 :root[data-theme="light"] .glow-copper {
-  background-image: linear-gradient(135deg, #4340bd, #6d28d9 48%, #d9367f);
+  background-image: linear-gradient(135deg, #4f46e5, #7c3aed 50%, #c026d3);
 }
 
 /* ---- custom cursor: hide the native pointer while active ---- */

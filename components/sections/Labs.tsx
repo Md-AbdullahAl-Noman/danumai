@@ -30,7 +30,7 @@ const capabilities: readonly Capability[] = [
     body: "Full-stack, owned end to end — from the first line of code to what ships in production.",
     tags: ["Web", "Mobile", "Backend"],
     accent: "#dda05a",
-    accentLight: "#c77c0a", // golden spotlight
+    accentLight: "#d97706", // warm amber
     Exhibit: ProductExhibit,
   },
   {
@@ -39,7 +39,7 @@ const capabilities: readonly Capability[] = [
     body: "Auth, payments, media, and analytics — built once, hardened continuously, reused by every venture.",
     tags: ["Auth", "Payments", "Media"],
     accent: "#d98363",
-    accentLight: "#e04435", // cinema coral
+    accentLight: "#e0402f", // signal coral
     Exhibit: PlatformExhibit,
   },
   {
@@ -48,7 +48,7 @@ const capabilities: readonly Capability[] = [
     body: "One visual language and component library spanning every Danumai product.",
     tags: ["Tokens", "Components", "Motion"],
     accent: "#7bb6a1",
-    accentLight: "#0f9168", // emerald studio
+    accentLight: "#0d9488", // studio teal
     Exhibit: DesignSystemExhibit,
   },
   {
@@ -57,7 +57,7 @@ const capabilities: readonly Capability[] = [
     body: "Deployed where it earns its keep in the product experience — and nowhere else.",
     tags: ["Recsys", "Tooling", "Search"],
     accent: "#8f9bd9",
-    accentLight: "#4340bd", // royal indigo
+    accentLight: "#4f46e5", // electric indigo
     Exhibit: AppliedAIExhibit,
   },
 ] as const;

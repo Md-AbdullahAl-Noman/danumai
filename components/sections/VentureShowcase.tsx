@@ -104,7 +104,14 @@ export default function VentureShowcase() {
   }
 
   return (
-    <section id="ventures" className="wash-indigo scroll-mt-24">
+    <section id="ventures" className="relative scroll-mt-24">
+      {/* Pinned wash: a viewport-tall gradient layer that sticks in place while
+          the deck scrolls, so the background holds steady instead of sliding
+          and shifting shade as the tall track passes behind it. */}
+      <div className="pointer-events-none sticky top-0 -z-10 h-0">
+        <div aria-hidden className="wash-indigo absolute left-0 top-0 h-screen w-full" />
+      </div>
+
       <div className="mx-auto max-w-6xl px-6 pt-24 md:px-10 md:pt-32">
         {header}
       </div>

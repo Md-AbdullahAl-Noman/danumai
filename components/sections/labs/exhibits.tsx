@@ -216,7 +216,7 @@ export function DesignSystemExhibit({ accent }: ExhibitProps) {
   const { theme } = useTheme();
   const swatches =
     theme === "light"
-      ? ["#c77c0a", "#e04435", "#0f9168", "#4340bd", "#16142b"]
+      ? ["#d97706", "#e0402f", "#0d9488", "#4f46e5", "#181920"]
       : ["#dda05a", "#d98363", "#7bb6a1", "#7c96c9", "#f1ece4"];
   return (
     <div className="flex h-full w-full flex-col gap-3">
