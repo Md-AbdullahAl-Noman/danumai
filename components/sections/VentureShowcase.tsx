@@ -9,13 +9,33 @@ import {
   useTransform,
   type MotionValue,
 } from "framer-motion";
-import { useRef, type CSSProperties } from "react";
+import { useRef, type CSSProperties, type ComponentType } from "react";
 import Link from "next/link";
 import Reveal from "@/components/ui/Reveal";
 import WordReveal from "@/components/ui/WordReveal";
-import { CareArt, ReelsArt, StudiosArt } from "./showcase/artworks";
+import { CareArt, ImageArt, ReelsArt, StudiosArt } from "./showcase/artworks";
+import type { Project } from "@/lib/data/projects";
 
-const ventures = [
+type Venture = {
+  index: string;
+  name: string;
+  tagline: string;
+  description: string;
+  status: string;
+  features: string[];
+  accent: string;
+  Art: ComponentType;
+};
+
+// Hand-built exhibits for the three original ventures, keyed by slug — kept
+// so admin-managed content for these three still gets the bespoke art.
+const HAND_BUILT_ART: Record<string, ComponentType> = {
+  banglareels: ReelsArt,
+  "danumai-studios": StudiosArt,
+  "care-technology": CareArt,
+};
+
+const defaultVentures: Venture[] = [
   {
     index: "01",
     name: "BanglaReels",
@@ -51,9 +71,25 @@ const ventures = [
   },
 ];
 
-const N = ventures.length;
+function toVentures(projects: Project[]): Venture[] {
+  return projects.map((p, i) => ({
+    index: String(i + 1).padStart(2, "0"),
+    name: p.name,
+    tagline: p.tagline,
+    description: p.description,
+    status: p.status,
+    features: p.features,
+    accent: p.accent,
+    Art:
+      HAND_BUILT_ART[p.slug] ??
+      (() => <ImageArt imageUrl={p.imageUrl} name={p.name} />),
+  }));
+}
 
-export default function VentureShowcase() {
+export default function VentureShowcase({ projects }: { projects?: Project[] }) {
+  const ventures = projects && projects.length > 0 ? toVentures(projects) : defaultVentures;
+  const N = ventures.length;
+  const trackUnits = (N - 1) * CHUNK; // e.g. 2.1 → 210vh for 3 cards
   const reduce = useReducedMotion();
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -121,7 +157,7 @@ export default function VentureShowcase() {
           dead scroll. */}
       <div
         ref={listRef}
-        style={{ height: `${TRACK_UNITS * 100}vh` }}
+        style={{ height: `${trackUnits * 100}vh` }}
         className="relative"
       >
         <div className="isolate sticky top-0 flex h-svh flex-col justify-center gap-8 overflow-hidden py-16 md:gap-16 md:py-32">
@@ -129,7 +165,14 @@ export default function VentureShowcase() {
           <div className="mx-auto w-full max-w-6xl px-6 md:px-10">
             <div className="relative h-108 sm:h-120 md:h-[min(30rem,72svh)]">
               {ventures.map((v, i) => (
-                <DeckCard key={v.name} v={v} i={i} progress={scrollYProgress} />
+                <DeckCard
+                  key={v.name}
+                  v={v}
+                  i={i}
+                  n={N}
+                  trackUnits={trackUnits}
+                  progress={scrollYProgress}
+                />
               ))}
             </div>
           </div>
@@ -146,41 +189,44 @@ export default function VentureShowcase() {
 const TRAVEL = 0.7;
 const DWELL = 0.35;
 const CHUNK = TRAVEL + DWELL;
-const TRACK_UNITS = (N - 1) * CHUNK; // e.g. 2.1 → 210vh for 3 cards
 
 const ENTER_FROM = 620; // px below its slot a card starts
 const PEEK = 16; // px of tinted top edge each buried card shows
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 // How far card j (j ≥ 1) has travelled into place, 0..1.
-const arrival = (p: number, j: number) =>
-  j <= 0 ? 1 : clamp01((p * TRACK_UNITS - (j - 1) * CHUNK) / TRAVEL);
+const arrival = (p: number, j: number, trackUnits: number) =>
+  j <= 0 ? 1 : clamp01((p * trackUnits - (j - 1) * CHUNK) / TRAVEL);
 
 function DeckCard({
   v,
   i,
+  n,
+  trackUnits,
   progress,
 }: {
-  v: (typeof ventures)[number];
+  v: Venture;
   i: number;
+  n: number;
+  trackUnits: number;
   progress: MotionValue<number>;
 }) {
   // Depth = how many later cards have landed on top (continuous 0..N-1-i).
   // The front card is always full size; buried cards recede up + back so
   // only their tinted top edge peeks above the card in front.
   const y = useTransform(progress, (p) => {
-    const enter = i === 0 ? 0 : (1 - arrival(p, i)) * ENTER_FROM;
+    const enter = i === 0 ? 0 : (1 - arrival(p, i, trackUnits)) * ENTER_FROM;
     let depth = 0;
-    for (let j = i + 1; j < N; j++) depth += arrival(p, j);
+    for (let j = i + 1; j < n; j++) depth += arrival(p, j, trackUnits);
     return enter - depth * PEEK;
   });
   const scale = useTransform(progress, (p) => {
     let depth = 0;
-    for (let j = i + 1; j < N; j++) depth += arrival(p, j);
+    for (let j = i + 1; j < n; j++) depth += arrival(p, j, trackUnits);
     return 1 - depth * 0.04;
   });
   const dim = useTransform(progress, (p) => {
     let depth = 0;
-    for (let j = i + 1; j < N; j++) depth += arrival(p, j);
+    for (let j = i + 1; j < n; j++) depth += arrival(p, j, trackUnits);
     return Math.min(0.55, depth * 0.38);
   });
 
@@ -203,7 +249,7 @@ function DeckCard({
 }
 
 /* ---------- the venture card itself ---------- */
-function VentureCard({ v }: { v: (typeof ventures)[number] }) {
+function VentureCard({ v }: { v: Venture }) {
   const accent = v.accent;
   const cardBg = `radial-gradient(120% 90% at 100% 0%, ${accent}70, transparent 68%), linear-gradient(158deg, ${accent}48, ${accent}24 55%, transparent 88%), linear-gradient(0deg, ${accent}16, ${accent}16), var(--color-surface)`;
   const cardBorder = `${accent}70`;

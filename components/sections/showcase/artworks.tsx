@@ -184,6 +184,27 @@ export function StudiosArt() {
   );
 }
 
+/**
+ * Fallback exhibit for admin-created ventures that don't have a hand-built
+ * Art component: renders the uploaded image, or an initial-letter monogram
+ * when no image has been uploaded yet.
+ */
+export function ImageArt({ imageUrl, name }: { imageUrl: string | null; name: string }) {
+  if (!imageUrl) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <span className="font-display text-5xl text-copper/30">
+          {name.charAt(0).toUpperCase()}
+        </span>
+      </div>
+    );
+  }
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={imageUrl} alt="" className="h-full w-full object-cover" />
+  );
+}
+
 export function CareArt() {
   const reduce = useReducedMotion();
   const rows = [

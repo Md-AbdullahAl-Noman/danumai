@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useState, type CSSProperties } from "react";
-import { sendApplication } from "@/app/careers/actions";
+import { sendApplication } from "@/app/(site)/careers/actions";
 import SubmitButton, { type SubmitState } from "@/components/ui/SubmitButton";
 
 type Job = {
@@ -15,7 +15,9 @@ type Job = {
   points: string[];
 };
 
-const jobs: Job[] = [
+// Fallback list shown if the database isn't reachable (e.g. DATABASE_URL not
+// configured yet), so the careers page still renders something useful.
+const defaultJobs: Job[] = [
   {
     id: "founding-product-engineer",
     title: "Founding Product Engineer",
@@ -142,7 +144,7 @@ function ApplyForm({ jobTitle }: { jobTitle: string }) {
   );
 }
 
-export default function JobList() {
+export default function JobList({ jobs = defaultJobs }: { jobs?: Job[] }) {
   const [open, setOpen] = useState<string | null>(null);
   const reduce = useReducedMotion();
 

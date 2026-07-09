@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { sendContactMessage } from "@/app/contact/actions";
+import { sendContactMessage } from "@/app/(site)/contact/actions";
 import SubmitButton, { type SubmitState } from "@/components/ui/SubmitButton";
 
 const topics = [

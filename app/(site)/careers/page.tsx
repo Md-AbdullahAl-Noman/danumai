@@ -4,6 +4,9 @@ import JobList from "@/components/careers/JobList";
 import Reveal from "@/components/ui/Reveal";
 import WordReveal from "@/components/ui/WordReveal";
 import MagneticButton from "@/components/ui/MagneticButton";
+import { listJobs } from "@/lib/data/jobs";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Careers",
@@ -11,7 +14,14 @@ export const metadata: Metadata = {
     "Join Danumai — engineers, designers, and storytellers building ventures we own and operate ourselves.",
 };
 
-export default function CareersPage() {
+export default async function CareersPage() {
+  // Falls back to JobList's built-in defaults if the database isn't
+  // reachable (e.g. DATABASE_URL not configured yet).
+  const jobs = await listJobs({ publishedOnly: true }).catch((err) => {
+    console.error("Failed to load jobs", err);
+    return undefined;
+  });
+
   return (
     <>
       <section className="wash-emerald relative overflow-hidden">
@@ -52,7 +62,7 @@ export default function CareersPage() {
             Open roles
           </h2>
         </Reveal>
-        <JobList />
+        <JobList jobs={jobs} />
         <Reveal delay={0.2}>
           <div
             className="card card-hover card-topline group mt-16 p-8 md:p-10"

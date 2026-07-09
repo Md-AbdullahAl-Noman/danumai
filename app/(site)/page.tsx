@@ -6,13 +6,23 @@ import Approach from "@/components/sections/Approach";
 import Labs from "@/components/sections/Labs";
 import Manifesto from "@/components/sections/Manifesto";
 import CTA from "@/components/sections/CTA";
+import { listProjects } from "@/lib/data/projects";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  // Falls back to VentureShowcase's built-in defaults if the database isn't
+  // reachable (e.g. DATABASE_URL not configured yet), so the site still renders.
+  const projects = await listProjects().catch((err) => {
+    console.error("Failed to load projects", err);
+    return undefined;
+  });
+
   return (
     <>
       <Hero />
       <Ticker />
-      <VentureShowcase />
+      <VentureShowcase projects={projects} />
       <Stats />
       <Approach />
       <Labs />
