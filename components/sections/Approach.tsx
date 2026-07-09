@@ -43,7 +43,7 @@ export default function Approach() {
   });
 
   return (
-    <section id="approach" className="scroll-mt-24 border-t hairline bg-ink-2">
+    <section id="approach" className="wash-cyan scroll-mt-24 border-t hairline bg-ink-2">
       <div className="mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
         <div className="grid gap-12 md:grid-cols-[1fr_1.6fr]">
           <div className="md:sticky md:top-28 md:self-start">

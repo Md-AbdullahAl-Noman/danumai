@@ -10,11 +10,20 @@ import {
 } from "framer-motion";
 import CharReveal from "@/components/ui/CharReveal";
 import MagneticButton from "@/components/ui/MagneticButton";
+import { useTheme } from "@/components/providers/ThemeProvider";
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export default function Hero() {
   const reduce = useReducedMotion();
+  // The breathing light field follows the theme: copper spotlights in the
+  // dark house theme; royal indigo and rose magenta beams on the prism
+  // light canvas.
+  const { theme } = useTheme();
+  const orbA =
+    theme === "light" ? "rgba(67,64,189,0.14)" : "rgba(217,154,78,0.11)";
+  const orbB =
+    theme === "light" ? "rgba(217,54,127,0.10)" : "rgba(217,154,78,0.06)";
 
   // Mouse-driven ambient parallax (springed so it settles, never snaps).
   const mx = useMotionValue(0);
@@ -56,8 +65,7 @@ export default function Hero() {
         <motion.div
           className="absolute right-[-10%] top-[-15%] h-[70vh] w-[70vw] rounded-full"
           style={{
-            background:
-              "radial-gradient(closest-side, rgba(217,154,78,0.11), transparent 70%)",
+            background: `radial-gradient(closest-side, ${orbA}, transparent 70%)`,
           }}
           animate={reduce ? undefined : { scale: [1, 1.08, 1], opacity: [1, 0.85, 1] }}
           transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
@@ -65,8 +73,7 @@ export default function Hero() {
         <motion.div
           className="absolute bottom-[-20%] left-[-10%] h-[55vh] w-[55vw] rounded-full"
           style={{
-            background:
-              "radial-gradient(closest-side, rgba(217,154,78,0.06), transparent 70%)",
+            background: `radial-gradient(closest-side, ${orbB}, transparent 70%)`,
           }}
           animate={reduce ? undefined : { scale: [1, 1.12, 1] }}
           transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 2 }}

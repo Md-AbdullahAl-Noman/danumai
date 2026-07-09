@@ -3,7 +3,7 @@ import Reveal from "@/components/ui/Reveal";
 
 export default function Manifesto() {
   return (
-    <section className="relative overflow-hidden border-t hairline">
+    <section className="wash-violet relative overflow-hidden border-t hairline">
       <div
         aria-hidden
         className="absolute inset-0"

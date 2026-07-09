@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
-import "../globals.css";
+import "./globals.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import ThemeProvider, {
   themeInitScript,

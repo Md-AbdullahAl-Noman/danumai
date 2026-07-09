@@ -11,6 +11,7 @@ import { useRef } from "react";
 import Link from "next/link";
 import Reveal from "@/components/ui/Reveal";
 import WordReveal from "@/components/ui/WordReveal";
+import { useTheme } from "@/components/providers/ThemeProvider";
 import { CareArt, ReelsArt, StudiosArt } from "./showcase/artworks";
 
 const ventures = [
@@ -23,6 +24,7 @@ const ventures = [
     status: "In development",
     features: ["Vertical serials", "Episode unlocks", "Creator tooling", "Offline-first"],
     accent: "#dda05a",
+    accentLight: "#c77c0a", // golden spotlight
     Art: ReelsArt,
   },
   {
@@ -34,6 +36,7 @@ const ventures = [
     status: "In development",
     features: ["Writers' room", "Vertical-first production", "Owned IP", "Fast cycles"],
     accent: "#d98363",
+    accentLight: "#e04435", // cinema coral
     Art: StudiosArt,
   },
   {
@@ -45,6 +48,7 @@ const ventures = [
     status: "Research",
     features: ["Shift coordination", "Family updates", "Care logs", "Gentle reminders"],
     accent: "#7bb6a1",
+    accentLight: "#0f9168", // emerald studio
     Art: CareArt,
   },
 ];
@@ -86,7 +90,7 @@ export default function VentureShowcase() {
   // Reduced-motion / no-JS-friendly fallback: a plain stacked list.
   if (reduce) {
     return (
-      <section id="ventures" className="scroll-mt-24">
+      <section id="ventures" className="wash-indigo scroll-mt-24">
         <div className="mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
           {header}
           <div className="mt-14 flex flex-col gap-8">
@@ -100,7 +104,7 @@ export default function VentureShowcase() {
   }
 
   return (
-    <section id="ventures" className="scroll-mt-24">
+    <section id="ventures" className="wash-indigo scroll-mt-24">
       <div className="mx-auto max-w-6xl px-6 pt-24 md:px-10 md:pt-32">
         {header}
       </div>
@@ -192,6 +196,10 @@ function DeckCard({
 
 /* ---------- the venture card itself ---------- */
 function VentureCard({ v }: { v: (typeof ventures)[number] }) {
+  // In light mode each venture refracts into its Cinematic Prism family —
+  // deeper, more saturated hues that hold contrast on the white canvas.
+  const { theme } = useTheme();
+  const accent = theme === "light" ? v.accentLight : v.accent;
   const ref = useRef<HTMLDivElement>(null);
   const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const el = ref.current;
@@ -206,9 +214,9 @@ function VentureCard({ v }: { v: (typeof ventures)[number] }) {
       ref={ref}
       onMouseMove={onMouseMove}
       style={{
-        borderColor: `${v.accent}33`,
-        background: `radial-gradient(120% 90% at 100% 0%, ${v.accent}22, transparent 55%), linear-gradient(160deg, ${v.accent}14, transparent 46%), var(--color-surface)`,
-        boxShadow: `0 44px 110px -42px var(--app-venture-drop), 0 1px 0 0 var(--app-card-inset) inset, 0 0 0 1px ${v.accent}1a inset`,
+        borderColor: `${accent}33`,
+        background: `radial-gradient(120% 90% at 100% 0%, ${accent}22, transparent 55%), linear-gradient(160deg, ${accent}14, transparent 46%), var(--color-surface)`,
+        boxShadow: `0 44px 110px -42px var(--app-venture-drop), 0 1px 0 0 var(--app-card-inset) inset, 0 0 0 1px ${accent}1a inset`,
       }}
       className="group relative grid h-full grid-cols-1 gap-4 overflow-hidden rounded-3xl border p-4 sm:gap-6 sm:p-5 md:grid-cols-2 md:gap-8 md:p-6"
     >
@@ -217,7 +225,7 @@ function VentureCard({ v }: { v: (typeof ventures)[number] }) {
         aria-hidden
         className="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
         style={{
-          background: `radial-gradient(340px circle at var(--mx, 50%) var(--my, 50%), ${v.accent}24, transparent 62%)`,
+          background: `radial-gradient(340px circle at var(--mx, 50%) var(--my, 50%), ${accent}24, transparent 62%)`,
         }}
       />
 
@@ -226,7 +234,7 @@ function VentureCard({ v }: { v: (typeof ventures)[number] }) {
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-px"
         style={{
-          background: `linear-gradient(90deg, transparent, ${v.accent}, transparent)`,
+          background: `linear-gradient(90deg, transparent, ${accent}, transparent)`,
         }}
       />
 
@@ -236,6 +244,8 @@ function VentureCard({ v }: { v: (typeof ventures)[number] }) {
         <span
           className="absolute right-3 top-3 rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.15em] backdrop-blur-sm"
           style={{
+            // The chip floats on the dark artwork in both themes, so it
+            // keeps the pastel dark-theme accent for contrast.
             borderColor: `${v.accent}40`,
             color: v.accent,
             background: "rgba(12,11,9,0.6)",
@@ -247,13 +257,13 @@ function VentureCard({ v }: { v: (typeof ventures)[number] }) {
 
       {/* Copy */}
       <div className="relative z-10 flex flex-col justify-center">
-        <span className="font-display text-xs" style={{ color: v.accent }}>
+        <span className="font-display text-xs" style={{ color: accent }}>
           {v.index}
         </span>
         <h3 className="mt-1.5 font-display text-xl tracking-tight text-paper sm:text-2xl md:mt-2 md:text-[1.75rem]">
           {v.name}
         </h3>
-        <p className="mt-1 text-xs sm:text-sm" style={{ color: `${v.accent}cc` }}>
+        <p className="mt-1 text-xs sm:text-sm" style={{ color: `${accent}cc` }}>
           {v.tagline}
         </p>
         <p className="mt-2.5 max-w-md text-sm leading-relaxed text-mist line-clamp-3 md:mt-3 md:line-clamp-none">
@@ -265,8 +275,8 @@ function VentureCard({ v }: { v: (typeof ventures)[number] }) {
               key={f}
               className="rounded-full border px-3 py-1 text-xs text-mist transition-colors sm:px-3.5 sm:py-1.5"
               style={{
-                borderColor: `${v.accent}26`,
-                background: `${v.accent}0d`,
+                borderColor: `${accent}26`,
+                background: `${accent}0d`,
               }}
             >
               {f}
@@ -276,7 +286,7 @@ function VentureCard({ v }: { v: (typeof ventures)[number] }) {
         <Link
           href={`/contact?topic=${encodeURIComponent(v.name)}`}
           className="group mt-4 inline-flex w-fit items-center gap-2 text-sm transition-colors md:mt-6"
-          style={{ color: v.accent }}
+          style={{ color: accent }}
         >
           Discuss this venture
           <span

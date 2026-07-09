@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function CareersPage() {
   return (
     <>
-      <section className="relative overflow-hidden">
+      <section className="wash-emerald relative overflow-hidden">
         <div
           aria-hidden
           className="absolute inset-0"

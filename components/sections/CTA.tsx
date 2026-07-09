@@ -4,7 +4,7 @@ import WordReveal from "@/components/ui/WordReveal";
 
 export default function CTA() {
   return (
-    <section className="border-t hairline">
+    <section className="wash-coral border-t hairline">
       <div className="mx-auto max-w-6xl px-6 py-24 text-center md:px-10 md:py-32">
         <WordReveal
           text="Building something that belongs under this roof?"

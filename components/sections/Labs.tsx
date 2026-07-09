@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState, type ComponentType } from "react";
 import Reveal from "@/components/ui/Reveal";
 import WordReveal from "@/components/ui/WordReveal";
+import { useTheme } from "@/components/providers/ThemeProvider";
 import {
   AppliedAIExhibit,
   DesignSystemExhibit,
@@ -17,6 +18,8 @@ type Capability = {
   body: string;
   tags: readonly string[];
   accent: string;
+  /** Cinematic Prism family used on the light canvas. */
+  accentLight: string;
   Exhibit: ComponentType<{ accent: string }>;
 };
 
@@ -27,6 +30,7 @@ const capabilities: readonly Capability[] = [
     body: "Full-stack, owned end to end — from the first line of code to what ships in production.",
     tags: ["Web", "Mobile", "Backend"],
     accent: "#dda05a",
+    accentLight: "#c77c0a", // golden spotlight
     Exhibit: ProductExhibit,
   },
   {
@@ -35,6 +39,7 @@ const capabilities: readonly Capability[] = [
     body: "Auth, payments, media, and analytics — built once, hardened continuously, reused by every venture.",
     tags: ["Auth", "Payments", "Media"],
     accent: "#d98363",
+    accentLight: "#e04435", // cinema coral
     Exhibit: PlatformExhibit,
   },
   {
@@ -43,6 +48,7 @@ const capabilities: readonly Capability[] = [
     body: "One visual language and component library spanning every Danumai product.",
     tags: ["Tokens", "Components", "Motion"],
     accent: "#7bb6a1",
+    accentLight: "#0f9168", // emerald studio
     Exhibit: DesignSystemExhibit,
   },
   {
@@ -51,6 +57,7 @@ const capabilities: readonly Capability[] = [
     body: "Deployed where it earns its keep in the product experience — and nowhere else.",
     tags: ["Recsys", "Tooling", "Search"],
     accent: "#8f9bd9",
+    accentLight: "#4340bd", // royal indigo
     Exhibit: AppliedAIExhibit,
   },
 ] as const;
@@ -84,9 +91,14 @@ export default function Labs() {
   };
 
   const current = capabilities[active];
+  // Resolve each capability's hue for the active theme — the light canvas
+  // uses the deeper Cinematic Prism families.
+  const { theme } = useTheme();
+  const hue = (c: Capability) => (theme === "light" ? c.accentLight : c.accent);
+  const accent = hue(current);
 
   return (
-    <section id="labs" className="scroll-mt-24 border-t hairline">
+    <section id="labs" className="wash-emerald scroll-mt-24 border-t hairline">
       <div className="mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
         {/* Header */}
         <div className="flex flex-wrap items-end justify-between gap-8">
@@ -126,6 +138,7 @@ export default function Labs() {
                 <LayerRow
                   key={c.n}
                   c={c}
+                  accent={hue(c)}
                   active={i === active}
                   paused={paused}
                   reduce={!!reduce}
@@ -137,9 +150,9 @@ export default function Labs() {
             {/* Right — live viewport */}
             <div
               style={{
-                borderColor: `${current.accent}33`,
-                background: `radial-gradient(120% 90% at 100% 0%, ${current.accent}18, transparent 55%), var(--color-surface)`,
-                boxShadow: `0 44px 110px -46px var(--app-venture-drop), 0 0 0 1px ${current.accent}1a inset`,
+                borderColor: `${accent}33`,
+                background: `radial-gradient(120% 90% at 100% 0%, ${accent}18, transparent 55%), var(--color-surface)`,
+                boxShadow: `0 44px 110px -46px var(--app-venture-drop), 0 0 0 1px ${accent}1a inset`,
                 transition: "border-color 0.6s ease, background 0.6s ease",
               }}
               className="relative flex min-h-105 flex-col overflow-hidden rounded-3xl border p-4 sm:p-5 md:p-6"
@@ -151,7 +164,7 @@ export default function Labs() {
                 <span className="h-2.5 w-2.5 rounded-full bg-paper/15" />
                 <span
                   className="ml-2 font-display text-[11px] tracking-[0.16em] transition-colors duration-500"
-                  style={{ color: current.accent }}
+                  style={{ color: accent }}
                 >
                   labs/{current.title.toLowerCase().replace(/ /g, "-")}
                 </span>
@@ -171,7 +184,7 @@ export default function Labs() {
                     transition={{ duration: 0.45, ease }}
                     className="absolute inset-0"
                   >
-                    <current.Exhibit accent={current.accent} />
+                    <current.Exhibit accent={accent} />
                   </motion.div>
                 </AnimatePresence>
               </div>
@@ -185,12 +198,14 @@ export default function Labs() {
 
 function LayerRow({
   c,
+  accent,
   active,
   paused,
   reduce,
   onSelect,
 }: {
   c: Capability;
+  accent: string;
   active: boolean;
   paused: boolean;
   reduce: boolean;
@@ -203,9 +218,9 @@ function LayerRow({
         onClick={onSelect}
         aria-pressed={active}
         style={{
-          borderColor: active ? `${c.accent}4d` : "var(--color-hairline)",
+          borderColor: active ? `${accent}4d` : "var(--color-hairline)",
           background: active
-            ? `radial-gradient(140% 100% at 0% 0%, ${c.accent}16, transparent 60%), var(--color-surface)`
+            ? `radial-gradient(140% 100% at 0% 0%, ${accent}16, transparent 60%), var(--color-surface)`
             : "transparent",
         }}
         className="group relative block w-full overflow-hidden rounded-2xl border p-5 text-left transition-colors duration-500 hover:border-paper/15"
@@ -215,7 +230,7 @@ function LayerRow({
           aria-hidden
           className="absolute inset-y-0 left-0 w-[3px] origin-top transition-transform duration-500"
           style={{
-            background: c.accent,
+            background: accent,
             transform: `scaleY(${active ? 1 : 0})`,
           }}
         />
@@ -224,7 +239,7 @@ function LayerRow({
           <motion.span
             aria-hidden
             className="absolute bottom-0 left-0 h-px"
-            style={{ background: c.accent }}
+            style={{ background: accent }}
             initial={{ width: "0%" }}
             animate={{ width: "100%" }}
             transition={{ duration: CYCLE_MS / 1000, ease: "linear" }}
@@ -234,7 +249,7 @@ function LayerRow({
         <div className="flex items-baseline gap-3">
           <span
             className="font-display text-sm italic transition-colors duration-500"
-            style={{ color: active ? c.accent : "var(--color-faint)" }}
+            style={{ color: active ? accent : "var(--color-faint)" }}
           >
             {c.n}
           </span>
@@ -249,7 +264,7 @@ function LayerRow({
           <span
             aria-hidden
             className="ml-auto translate-x-1 opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100"
-            style={{ color: c.accent, opacity: active ? 1 : undefined }}
+            style={{ color: accent, opacity: active ? 1 : undefined }}
           >
             →
           </span>
@@ -273,8 +288,8 @@ function LayerRow({
                   key={t}
                   className="rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.12em] text-mist"
                   style={{
-                    borderColor: `${c.accent}2e`,
-                    background: `${c.accent}0d`,
+                    borderColor: `${accent}2e`,
+                    background: `${accent}0d`,
                   }}
                 >
                   {t}

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { useTheme } from "@/components/providers/ThemeProvider";
 
 /**
  * Hand-built animated "exhibits" for the Danumai Labs console — one living
@@ -100,7 +101,7 @@ export function ProductExhibit({ accent }: ExhibitProps) {
               {s}
             </span>
             {i < stages.length - 1 && (
-              <span className="relative mx-1 h-px flex-1 bg-paper/10">
+              <span className="relative mx-1 h-px flex-1 overflow-hidden bg-paper/10">
                 {!reduce && (
                   <motion.span
                     className="absolute inset-y-0 left-0 w-6 rounded-full"
@@ -210,7 +211,13 @@ export function PlatformExhibit({ accent }: ExhibitProps) {
 /* ---------- 03 · Design system — tokens & components ---------- */
 export function DesignSystemExhibit({ accent }: ExhibitProps) {
   const reduce = useReducedMotion();
-  const swatches = ["#dda05a", "#d98363", "#7bb6a1", "#7c96c9", "#f1ece4"];
+  // The token palette exhibit shows the active theme's real families:
+  // house pastels in the dark, Cinematic Prism hues on the light canvas.
+  const { theme } = useTheme();
+  const swatches =
+    theme === "light"
+      ? ["#c77c0a", "#e04435", "#0f9168", "#4340bd", "#16142b"]
+      : ["#dda05a", "#d98363", "#7bb6a1", "#7c96c9", "#f1ece4"];
   return (
     <div className="flex h-full w-full flex-col gap-3">
       {/* token palette */}
