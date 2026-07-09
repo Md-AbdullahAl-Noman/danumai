@@ -10,8 +10,11 @@ const ventures = [
 
 export default function Footer() {
   return (
-    <footer id="contact" className="border-t hairline bg-ink-2">
-      <Reveal y={24} className="mx-auto max-w-6xl px-6 py-20 md:px-10">
+    <footer id="contact" className="site-footer">
+      <span className="footer-watermark" aria-hidden>
+        Danumai
+      </span>
+      <Reveal y={24} className="relative mx-auto max-w-6xl px-6 py-24 md:px-10">
         <div className="grid gap-14 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <Link

@@ -2,16 +2,17 @@
 
 import {
   motion,
+  useMotionValue,
   useReducedMotion,
   useScroll,
+  useSpring,
   useTransform,
   type MotionValue,
 } from "framer-motion";
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
 import Link from "next/link";
 import Reveal from "@/components/ui/Reveal";
 import WordReveal from "@/components/ui/WordReveal";
-import { useTheme } from "@/components/providers/ThemeProvider";
 import { CareArt, ReelsArt, StudiosArt } from "./showcase/artworks";
 
 const ventures = [
@@ -23,8 +24,7 @@ const ventures = [
       "A vertical micro-drama platform built for how 300 million people actually watch — serialized stories, episode by episode, in their own language.",
     status: "In development",
     features: ["Vertical serials", "Episode unlocks", "Creator tooling", "Offline-first"],
-    accent: "#dda05a",
-    accentLight: "#d97706", // warm amber
+    accent: "#d97706", // warm amber
     Art: ReelsArt,
   },
   {
@@ -35,8 +35,7 @@ const ventures = [
       "The content engine behind our platforms. We write, produce, and own the serials we stream — no licensing, no middlemen, full creative control.",
     status: "In development",
     features: ["Writers' room", "Vertical-first production", "Owned IP", "Fast cycles"],
-    accent: "#d98363",
-    accentLight: "#e0402f", // signal coral
+    accent: "#e0402f", // signal coral
     Art: StudiosArt,
   },
   {
@@ -47,8 +46,7 @@ const ventures = [
       "Tools that give caregivers time back — scheduling, coordination, and communication built around the realities of care work, not around billing codes.",
     status: "Research",
     features: ["Shift coordination", "Family updates", "Care logs", "Gentle reminders"],
-    accent: "#7bb6a1",
-    accentLight: "#0d9488", // studio teal
+    accent: "#0d9488", // studio teal
     Art: CareArt,
   },
 ];
@@ -91,7 +89,7 @@ export default function VentureShowcase() {
       <section id="ventures" className="wash-indigo scroll-mt-24">
         <div className="mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
           {header}
-          <div className="mt-14 flex flex-col gap-8">
+          <div className="mt-20 flex flex-col gap-8">
             {ventures.map((v) => (
               <VentureCard key={v.name} v={v} />
             ))}
@@ -105,9 +103,16 @@ export default function VentureShowcase() {
     <section id="ventures" className="relative scroll-mt-24">
       {/* Pinned wash: a viewport-tall gradient layer that sticks in place while
           the deck scrolls, so the background holds steady instead of sliding
-          and shifting shade as the tall track passes behind it. */}
-      <div className="pointer-events-none sticky top-0 -z-10 h-0">
-        <div aria-hidden className="wash-indigo absolute left-0 top-0 h-screen w-full" />
+          and shifting shade as the tall track passes behind it. It's masked to
+          fade out top and bottom, and — crucially — the wrapper fills the
+          section and clips (overflow-hidden), so the indigo is physically
+          bounded to the ventures section and can never hang below into Stats
+          or Approach once the sticky release parks it at the section's end. */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div
+          aria-hidden
+          className="wash-indigo sticky left-0 top-0 h-screen w-full [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)]"
+        />
       </div>
 
       {/* Scroll-driven deck: header and cards are pinned together in one
@@ -119,7 +124,7 @@ export default function VentureShowcase() {
         style={{ height: `${TRACK_UNITS * 100}vh` }}
         className="relative"
       >
-        <div className="sticky top-0 flex h-screen flex-col justify-center gap-8 py-24 md:gap-10 md:py-32">
+        <div className="isolate sticky top-0 flex h-screen flex-col justify-center gap-12 overflow-hidden py-24 md:gap-16 md:py-32">
           <div className="mx-auto w-full max-w-6xl px-6 md:px-10">{header}</div>
           <div className="mx-auto w-full max-w-6xl px-6 md:px-10">
             <div className="relative h-108 sm:h-120 md:h-[min(30rem,72svh)]">
@@ -199,32 +204,54 @@ function DeckCard({
 
 /* ---------- the venture card itself ---------- */
 function VentureCard({ v }: { v: (typeof ventures)[number] }) {
-  // In light mode each venture refracts into its Cinematic Prism family —
-  // deeper, more saturated hues that hold contrast on the white canvas.
-  const { theme } = useTheme();
-  const light = theme === "light";
-  const accent = light ? v.accentLight : v.accent;
-  // In daylight the venture card carries a clearly colored core — a stronger
-  // accent wash over the porcelain surface — so it reads as a tinted panel,
-  // not a white box. The dark theme keeps its subtle top-corner glow.
-  const cardBg = light
-    ? `radial-gradient(120% 90% at 100% 0%, ${accent}40, transparent 58%), linear-gradient(158deg, ${accent}28, ${accent}12 52%, transparent 76%), var(--color-surface)`
-    : `radial-gradient(120% 90% at 100% 0%, ${accent}22, transparent 55%), linear-gradient(160deg, ${accent}14, transparent 46%), var(--color-surface)`;
-  const cardBorder = light ? `${accent}55` : `${accent}33`;
-  const cardRing = light ? `${accent}33` : `${accent}1a`;
+  const accent = v.accent;
+  const cardBg = `radial-gradient(120% 90% at 100% 0%, ${accent}70, transparent 68%), linear-gradient(158deg, ${accent}48, ${accent}24 55%, transparent 88%), linear-gradient(0deg, ${accent}16, ${accent}16), var(--color-surface)`;
+  const cardBorder = `${accent}70`;
+  const cardRing = `${accent}45`;
+  const reduce = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
+
+  // Cursor-driven 3D tilt: the card leans a few degrees toward the pointer and
+  // springs back level on exit, so it reads as a physical panel catching the
+  // light rather than a flat rectangle. Held subtle so the copy stays legible.
+  // The transform lives on an outer wrapper, leaving the tinted card surface as
+  // the plane that tilts.
+  const rotX = useMotionValue(0);
+  const rotY = useMotionValue(0);
+  const spring = { stiffness: 160, damping: 18, mass: 0.5 } as const;
+  const srotX = useSpring(rotX, spring);
+  const srotY = useSpring(rotY, spring);
+
   const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const el = ref.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
     el.style.setProperty("--mx", `${e.clientX - rect.left}px`);
     el.style.setProperty("--my", `${e.clientY - rect.top}px`);
+    if (reduce) return;
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+    rotY.set((px - 0.5) * 13);
+    rotX.set((0.5 - py) * 13);
+  };
+  const onMouseLeave = () => {
+    rotX.set(0);
+    rotY.set(0);
   };
 
   return (
+    <motion.div
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+      style={{
+        rotateX: reduce ? 0 : srotX,
+        rotateY: reduce ? 0 : srotY,
+        transformPerspective: 1200,
+      }}
+      className="h-full will-change-transform"
+    >
     <div
       ref={ref}
-      onMouseMove={onMouseMove}
       style={{
         borderColor: cardBorder,
         background: cardBg,
@@ -256,8 +283,6 @@ function VentureCard({ v }: { v: (typeof ventures)[number] }) {
         <span
           className="absolute right-3 top-3 rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.15em] backdrop-blur-sm"
           style={{
-            // The chip floats on the dark artwork in both themes, so it
-            // keeps the pastel dark-theme accent for contrast.
             borderColor: `${v.accent}40`,
             color: v.accent,
             background: "rgba(12,11,9,0.6)",
@@ -285,11 +310,8 @@ function VentureCard({ v }: { v: (typeof ventures)[number] }) {
           {v.features.map((f) => (
             <li
               key={f}
-              className="rounded-full border px-3 py-1 text-xs text-mist transition-colors sm:px-3.5 sm:py-1.5"
-              style={{
-                borderColor: `${accent}26`,
-                background: `${accent}0d`,
-              }}
+              className="venture-pill rounded-full border px-3 py-1 text-xs text-mist sm:px-3.5 sm:py-1.5"
+              style={{ "--pill": accent } as CSSProperties}
             >
               {f}
             </li>
@@ -310,5 +332,7 @@ function VentureCard({ v }: { v: (typeof ventures)[number] }) {
         </Link>
       </div>
     </div>
+    </motion.div>
   );
 }
+

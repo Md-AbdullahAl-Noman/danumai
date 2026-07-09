@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { sendContactMessage } from "@/app/contact/actions";
 import SubmitButton, { type SubmitState } from "@/components/ui/SubmitButton";
 
 const topics = [
@@ -21,25 +22,25 @@ export default function ContactForm() {
     preset && topics.includes(preset) ? preset : "General"
   );
   const [state, setState] = useState<SubmitState>("idle");
+  const [error, setError] = useState<string | null>(null);
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (state !== "idle") return;
-    const data = new FormData(e.currentTarget);
-    const name = String(data.get("name") ?? "");
-    const email = String(data.get("email") ?? "");
-    const message = String(data.get("message") ?? "");
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    data.set("topic", topic);
 
     setState("loading");
-    // No backend yet — we compose the mail in the visitor's own client.
-    const subject = `[${topic}] Message from ${name}`;
-    const body = `${message}\n\n—\n${name}\n${email}`;
-    setTimeout(() => {
-      window.location.href = `mailto:hello@danumai.com?subject=${encodeURIComponent(
-        subject
-      )}&body=${encodeURIComponent(body)}`;
+    setError(null);
+    const result = await sendContactMessage(data);
+    if (result.status === "success") {
       setState("success");
-    }, 900);
+      form.reset();
+    } else {
+      setState("idle");
+      setError(result.message ?? "Something went wrong.");
+    }
   };
 
   return (
@@ -128,11 +129,16 @@ export default function ContactForm() {
       <SubmitButton
         state={state}
         idleLabel="Send message"
-        successLabel="Opening your mail app…"
+        successLabel="Sent — we'll reply soon"
       />
+      {error && (
+        <p role="alert" className="text-xs leading-relaxed text-red-400">
+          {error}
+        </p>
+      )}
       <p className="text-xs leading-relaxed text-faint">
-        Sends via your own mail client to hello@danumai.com — nothing is
-        stored on this site.
+        Sends straight to hello@danumai.com — nothing is stored on this
+        site.
       </p>
     </form>
   );

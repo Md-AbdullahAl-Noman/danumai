@@ -10,20 +10,16 @@ import {
 } from "framer-motion";
 import CharReveal from "@/components/ui/CharReveal";
 import MagneticButton from "@/components/ui/MagneticButton";
-import { useTheme } from "@/components/providers/ThemeProvider";
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
+// Breathing light field: golden spotlight and rose magenta beams on the
+// warm prism light canvas.
+const ORB_A = "rgba(217,143,31,0.20)";
+const ORB_B = "rgba(217,54,127,0.14)";
+
 export default function Hero() {
   const reduce = useReducedMotion();
-  // The breathing light field follows the theme: copper spotlights in the
-  // dark house theme; golden spotlight and rose magenta beams on the warm
-  // prism light canvas.
-  const { theme } = useTheme();
-  const orbA =
-    theme === "light" ? "rgba(217,143,31,0.20)" : "rgba(217,154,78,0.11)";
-  const orbB =
-    theme === "light" ? "rgba(217,54,127,0.14)" : "rgba(217,154,78,0.06)";
 
   // Mouse-driven ambient parallax (springed so it settles, never snaps).
   const mx = useMotionValue(0);
@@ -65,7 +61,7 @@ export default function Hero() {
         <motion.div
           className="absolute right-[-10%] top-[-15%] h-[70vh] w-[70vw] rounded-full"
           style={{
-            background: `radial-gradient(closest-side, ${orbA}, transparent 70%)`,
+            background: `radial-gradient(closest-side, ${ORB_A}, transparent 70%)`,
           }}
           animate={reduce ? undefined : { scale: [1, 1.08, 1], opacity: [1, 0.85, 1] }}
           transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
@@ -73,7 +69,7 @@ export default function Hero() {
         <motion.div
           className="absolute bottom-[-20%] left-[-10%] h-[55vh] w-[55vw] rounded-full"
           style={{
-            background: `radial-gradient(closest-side, ${orbB}, transparent 70%)`,
+            background: `radial-gradient(closest-side, ${ORB_B}, transparent 70%)`,
           }}
           animate={reduce ? undefined : { scale: [1, 1.12, 1] }}
           transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 2 }}
@@ -162,8 +158,17 @@ export default function Hero() {
         <span className="relative block h-9 w-px overflow-hidden bg-paper/10">
           <motion.span
             className="absolute left-0 top-0 h-3 w-px bg-copper"
-            animate={reduce ? undefined : { y: [-12, 36] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            animate={
+              reduce
+                ? undefined
+                : { y: [0, 24, 24], opacity: [0, 1, 0] }
+            }
+            transition={{
+              duration: 1.8,
+              repeat: Infinity,
+              ease: "easeInOut",
+              times: [0, 0.85, 1],
+            }}
           />
         </span>
       </motion.div>

@@ -4,8 +4,8 @@ import WordReveal from "@/components/ui/WordReveal";
 
 export default function CTA() {
   return (
-    <section className="wash-coral border-t hairline">
-      <div className="mx-auto max-w-6xl px-6 py-24 text-center md:px-10 md:py-32">
+    <section className="wash-coral border-t section-edge">
+      <div className="mx-auto max-w-6xl px-6 pb-24 pt-40 text-center md:px-10 md:pb-32 md:pt-56">
         <WordReveal
           text="Building something that belongs under this roof?"
           accentWords={["roof"]}

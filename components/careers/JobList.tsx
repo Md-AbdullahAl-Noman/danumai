@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useState, type CSSProperties } from "react";
+import { sendApplication } from "@/app/careers/actions";
 import SubmitButton, { type SubmitState } from "@/components/ui/SubmitButton";
 
 type Job = {
@@ -63,26 +64,24 @@ const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 function ApplyForm({ jobTitle }: { jobTitle: string }) {
   const [state, setState] = useState<SubmitState>("idle");
+  const [error, setError] = useState<string | null>(null);
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (state !== "idle") return;
-    const data = new FormData(e.currentTarget);
-    const name = String(data.get("name") ?? "");
-    const email = String(data.get("email") ?? "");
-    const portfolio = String(data.get("portfolio") ?? "");
-    const note = String(data.get("note") ?? "");
+    const form = e.currentTarget;
+    const data = new FormData(form);
 
     setState("loading");
-    // No backend yet — the application is composed in the visitor's mail client.
-    const subject = `Application — ${jobTitle} — ${name}`;
-    const body = `${note}\n\nPortfolio / work: ${portfolio}\n\n—\n${name}\n${email}`;
-    setTimeout(() => {
-      window.location.href = `mailto:careers@danumai.com?subject=${encodeURIComponent(
-        subject
-      )}&body=${encodeURIComponent(body)}`;
+    setError(null);
+    const result = await sendApplication(jobTitle, data);
+    if (result.status === "success") {
       setState("success");
-    }, 900);
+      form.reset();
+    } else {
+      setState("idle");
+      setError(result.message ?? "Something went wrong.");
+    }
   };
 
   return (
@@ -131,9 +130,14 @@ function ApplyForm({ jobTitle }: { jobTitle: string }) {
         <SubmitButton
           state={state}
           idleLabel="Send application"
-          successLabel="Opening your mail app…"
+          successLabel="Sent — we'll reply soon"
         />
       </div>
+      {error && (
+        <p role="alert" className="mt-3 text-xs leading-relaxed text-red-400">
+          {error}
+        </p>
+      )}
     </form>
   );
 }

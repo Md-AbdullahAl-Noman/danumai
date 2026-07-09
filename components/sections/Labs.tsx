@@ -4,7 +4,6 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState, type ComponentType } from "react";
 import Reveal from "@/components/ui/Reveal";
 import WordReveal from "@/components/ui/WordReveal";
-import { useTheme } from "@/components/providers/ThemeProvider";
 import {
   AppliedAIExhibit,
   DesignSystemExhibit,
@@ -17,9 +16,8 @@ type Capability = {
   title: string;
   body: string;
   tags: readonly string[];
-  accent: string;
   /** Cinematic Prism family used on the light canvas. */
-  accentLight: string;
+  accent: string;
   Exhibit: ComponentType<{ accent: string }>;
 };
 
@@ -29,8 +27,7 @@ const capabilities: readonly Capability[] = [
     title: "Product engineering",
     body: "Full-stack, owned end to end — from the first line of code to what ships in production.",
     tags: ["Web", "Mobile", "Backend"],
-    accent: "#dda05a",
-    accentLight: "#d97706", // warm amber
+    accent: "#d97706", // warm amber
     Exhibit: ProductExhibit,
   },
   {
@@ -38,8 +35,7 @@ const capabilities: readonly Capability[] = [
     title: "Shared platform",
     body: "Auth, payments, media, and analytics — built once, hardened continuously, reused by every venture.",
     tags: ["Auth", "Payments", "Media"],
-    accent: "#d98363",
-    accentLight: "#e0402f", // signal coral
+    accent: "#e0402f", // signal coral
     Exhibit: PlatformExhibit,
   },
   {
@@ -47,8 +43,7 @@ const capabilities: readonly Capability[] = [
     title: "Design system",
     body: "One visual language and component library spanning every Danumai product.",
     tags: ["Tokens", "Components", "Motion"],
-    accent: "#7bb6a1",
-    accentLight: "#0d9488", // studio teal
+    accent: "#0d9488", // studio teal
     Exhibit: DesignSystemExhibit,
   },
   {
@@ -56,8 +51,7 @@ const capabilities: readonly Capability[] = [
     title: "Applied AI",
     body: "Deployed where it earns its keep in the product experience — and nowhere else.",
     tags: ["Recsys", "Tooling", "Search"],
-    accent: "#8f9bd9",
-    accentLight: "#4f46e5", // electric indigo
+    accent: "#4f46e5", // electric indigo
     Exhibit: AppliedAIExhibit,
   },
 ] as const;
@@ -91,14 +85,10 @@ export default function Labs() {
   };
 
   const current = capabilities[active];
-  // Resolve each capability's hue for the active theme — the light canvas
-  // uses the deeper Cinematic Prism families.
-  const { theme } = useTheme();
-  const hue = (c: Capability) => (theme === "light" ? c.accentLight : c.accent);
-  const accent = hue(current);
+  const accent = current.accent;
 
   return (
-    <section id="labs" className="wash-emerald scroll-mt-24 border-t hairline">
+    <section id="labs" className="wash-emerald scroll-mt-24 border-t section-edge">
       <div className="mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
         {/* Header */}
         <div className="flex flex-wrap items-end justify-between gap-8">
@@ -138,7 +128,7 @@ export default function Labs() {
                 <LayerRow
                   key={c.n}
                   c={c}
-                  accent={hue(c)}
+                  accent={c.accent}
                   active={i === active}
                   paused={paused}
                   reduce={!!reduce}

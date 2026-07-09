@@ -1,10 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Utilities resolve to themeable app tokens (defined per-theme in :root
-     below). Because @theme inline substitutes the token's *value* — here a
-     var() — into every utility, flipping the --app-* layer at runtime
-     re-themes bg-ink, text-paper, text-copper, and friends in one move. */
+  /* Utilities resolve to the app tokens defined in :root below. */
   --color-ink: var(--app-ink);
   --color-ink-2: var(--app-ink-2);
   --color-ink-3: var(--app-ink-3);
@@ -17,6 +14,7 @@
   --color-copper: var(--app-copper);
   --color-copper-soft: var(--app-copper-soft);
   --color-copper-deep: var(--app-copper-deep);
+  --color-nav-bubble: var(--app-nav-bubble);
 
   --color-terracotta: var(--app-terracotta);
   --color-sage: var(--app-sage);
@@ -29,71 +27,8 @@
 }
 
 /* ============================ THEME TOKENS ============================
-   DARK — the original house palette: a deep, warm near-black base rising
-   through elevated tiers, lit by copper. This is the default. */
-:root {
-  color-scheme: dark;
-
-  --app-ink: #0b0a08;
-  --app-ink-2: #131009;
-  --app-ink-3: #1a1712;
-  --app-surface: #14110c;
-  --app-surface-2: #1b1712;
-  --app-paper: #f1ece4;
-  --app-mist: #a49d92;
-  --app-faint: #726c62;
-
-  --app-copper: #dda05a;
-  --app-copper-soft: #efc78c;
-  --app-copper-deep: #a86f2e;
-
-  --app-terracotta: #d98363;
-  --app-sage: #7bb6a1;
-  --app-azure: #7c96c9;
-
-  --app-hairline: rgba(241, 236, 228, 0.08);
-  --app-hairline-strong: rgba(241, 236, 228, 0.14);
-
-  /* surface treatments referenced by the utility layer below */
-  --app-body:
-    radial-gradient(
-      120% 80% at 50% -10%,
-      rgba(221, 160, 90, 0.05),
-      transparent 60%
-    ),
-    #0b0a08;
-  --app-selection: rgba(217, 154, 78, 0.28);
-  --app-grid-line: rgba(241, 236, 228, 0.045);
-  --app-grain-opacity: 0.035;
-  --app-card-sheen: rgba(241, 236, 228, 0.035);
-  --app-card-inset: rgba(241, 236, 228, 0.04);
-  --app-card-inset-strong: rgba(241, 236, 228, 0.06);
-  --app-card-shadow: 0 24px 60px -32px rgba(0, 0, 0, 0.85);
-  --app-card-shadow-hover:
-    0 34px 80px -34px rgba(0, 0, 0, 0.9),
-    0 0 44px -18px rgba(221, 160, 90, 0.28);
-  --app-venture-drop: rgba(0, 0, 0, 0.9);
-  --app-field-bg: rgba(237, 232, 224, 0.03);
-  --app-field-bg-focus: rgba(237, 232, 224, 0.05);
-  --app-field-border-hover: rgba(237, 232, 224, 0.16);
-
-  /* accent-driven interaction colors (re-pointed per theme) */
-  --app-focus-ring: rgba(217, 154, 78, 0.7);
-  --app-cta-glow: rgba(221, 160, 90, 0.55);
-  --app-cta-glow-hover: rgba(221, 160, 90, 0.7);
-  --app-card-border-hover: rgba(221, 160, 90, 0.32);
-  --app-topline: rgba(221, 160, 90, 0.55);
-  --app-cursor-glow: rgba(217, 154, 78, 0.09);
-  --app-field-focus-border: rgba(217, 154, 78, 0.5);
-  --app-field-focus-ring: rgba(217, 154, 78, 0.08);
-  --app-pulse: rgba(217, 154, 78, 0.35);
-  --app-hero-glow-a: rgba(217, 154, 78, 0.1);
-  --app-hero-glow-b: rgba(217, 154, 78, 0.06);
-}
-
-/* LIGHT — "Daylight Studio": a cool, luminous premium daylight — the
-   architectural counterpart to the warm copper dark house. Everything is
-   built on three ideas:
+   LIGHT — "Daylight Studio": a cool, luminous premium daylight, and the
+   site's only theme. Everything is built on three ideas:
 
      1. The canvas is COOL PORCELAIN (#e7eaf1) — a real blue-grey, not
         white. White cards then lift off it with obvious separation, so
@@ -109,7 +44,7 @@
      canvas  #e7eaf1   the porcelain everything sits on
      ink/2/3 #e2e6ee → #d1d8e4   recessed pills, chrome, inner tiles
      surface #f8fafd   LIFTED bright card, floated on layered shadow */
-:root[data-theme="light"] {
+:root {
   color-scheme: light;
 
   /* recessed background bands — cool porcelain → slate, never white */
@@ -128,6 +63,11 @@
   --app-copper: #4f46e5;
   --app-copper-soft: #7c3aed;
   --app-copper-deep: #3730a3;
+  /* nav bubble breaks from the indigo used everywhere else (CTAs, accent
+     words) so the active-section pill reads as its own signal, not a
+     repeat of the primary accent — Signal Coral picks up the warm jewel
+     pool already in the canvas */
+  --app-nav-bubble: #e0402f;
 
   /* supporting roles → Signal Coral, Studio Teal, Electric Cyan */
   --app-terracotta: #e0402f;
@@ -138,31 +78,19 @@
   --app-hairline: rgba(24, 25, 32, 0.09);
   --app-hairline-strong: rgba(24, 25, 32, 0.15);
 
-  /* cool porcelain canvas lit from above by indigo, with jewel pools in
-     the corners: rose magenta right, studio teal low-left, warm peach
-     low-right — the color lives in the light, the base stays cool */
-  --app-body:
-    radial-gradient(
-      120% 80% at 50% -12%,
-      rgba(79, 70, 229, 0.12),
-      transparent 60%
-    ),
-    radial-gradient(
-      66% 58% at 100% 18%,
-      rgba(217, 54, 127, 0.08),
-      transparent 60%
-    ),
-    radial-gradient(
-      78% 58% at 0% 100%,
-      rgba(13, 148, 136, 0.09),
-      transparent 58%
-    ),
-    radial-gradient(
-      72% 55% at 100% 102%,
-      rgba(224, 128, 84, 0.1),
-      transparent 55%
-    ),
-    #e7eaf1;
+  /* cool porcelain canvas lit from above by a single indigo crown.
+
+     IMPORTANT: the body background scrolls with the page, so any colored
+     region here is pinned to a fixed PAGE position — and a large soft radial
+     fades out along a broad horizontal arc that then cuts straight across
+     whatever section happens to sit at that scroll depth, making content
+     there look stranded in a differently-tinted band (this is exactly what
+     the old corner jewel pools did to mid-Approach). So the canvas is kept
+     to ONE crown at the very top, where only the hero sits and nothing
+     stacks against it. All other daylight color comes from bounded, edge-
+     fading layers that can't band the page: the hero's own .aurora and each
+     act's faint per-section .wash-*. The base stays flat cool porcelain. */
+  --app-body: #e7eaf1;
   --app-selection: rgba(79, 70, 229, 0.18);
   --app-grid-line: rgba(24, 25, 32, 0.05);
   --app-grain-opacity: 0.02;
@@ -199,6 +127,10 @@
   --app-pulse: rgba(217, 54, 127, 0.4);
   --app-hero-glow-a: rgba(79, 70, 229, 0.16);
   --app-hero-glow-b: rgba(217, 54, 127, 0.1);
+
+  /* the violet wash already lights the manifesto, so this stays off —
+     no second color layer competing with it */
+  --app-ambient-glow: transparent;
 }
 
 html {
@@ -211,20 +143,6 @@ body {
   font-family: var(--font-inter), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
-}
-
-/* Smooth cross-fade of colors while switching themes. The `.theme-transition`
-   class is added to <html> for ~half a second by the theme toggle, so we pay
-   the transition cost only during the switch — never during normal interaction
-   (which would fight each element's own motion). */
-.theme-transition,
-.theme-transition *,
-.theme-transition *::before,
-.theme-transition *::after {
-  transition-property:
-    background-color, border-color, color, box-shadow, fill, stroke !important;
-  transition-duration: 0.45s !important;
-  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
 
 ::selection {
@@ -273,87 +191,140 @@ body {
 .hairline {
   border-color: var(--color-hairline);
 }
-/* ---- Cinematic Prism section washes ----
-   Each act of the page leads with its own dominant color family. The
-   classes are inert in the dark theme (the house look stays untouched)
-   and paint soft, directional light in the light theme. */
-:root[data-theme="light"] .wash-indigo {
-  background-image:
-    radial-gradient(
-      90% 70% at 15% 0%,
-      rgba(67, 64, 189, 0.18),
-      transparent 55%
-    ),
-    radial-gradient(
-      70% 60% at 95% 100%,
-      rgba(217, 54, 127, 0.14),
-      transparent 60%
-    );
+
+/* ---- section divider edge ----
+   Full-width rules between page sections read as hard gray lines on the
+   porcelain canvas, so they stay fully transparent and the sections flow
+   into one another. Pair with Tailwind's border-t / border-y to choose
+   which edges draw. (Component borders keep using .hairline.) */
+.section-edge {
+  border-color: transparent;
 }
-:root[data-theme="light"] .wash-gold {
-  background-image:
-    radial-gradient(
-      90% 70% at 85% 0%,
-      rgba(217, 143, 31, 0.22),
-      transparent 55%
-    ),
-    radial-gradient(
-      70% 60% at 5% 100%,
-      rgba(255, 158, 107, 0.2),
-      transparent 60%
-    );
+
+/* ---- full-bleed section band ----
+   Transparent — a flat solid block here would sit at a hard, different
+   shade from the neighboring transparent/wash sections and read as a seam.
+   Staying transparent lets the shared canvas + that section's own wash
+   show through, so every section transitions the same way. */
+.section-band {
+  background-color: transparent;
 }
-:root[data-theme="light"] .wash-cyan {
-  background-image:
-    radial-gradient(
-      90% 70% at 10% 10%,
-      rgba(9, 149, 198, 0.18),
-      transparent 55%
-    ),
-    radial-gradient(
-      70% 60% at 90% 95%,
-      rgba(16, 157, 114, 0.14),
-      transparent 60%
-    );
+/* ---- section color washes ----
+   Each act carries ONE dominant hue — a single soft glow, not multiple
+   overlapping color blobs, so a section never reads as two shades stacked.
+   The wash MUST be centered vertically (at 50%) and reach full transparency
+   before the radius spans half the height, so the glow dies out before it
+   touches the top or bottom edge. A wash that is still colored at its own
+   top/bottom edge paints a hard horizontal line where the section meets its
+   neighbor — the "section split into two shades" seam. Horizontal position
+   varies per act for character; vertical stays centered so stacked sections
+   never band.
+
+   Held deliberately faint (~0.04) and faded EARLY (transparent by ~46%) so
+   each act's hue is a small contained pool near its own center — never a
+   band that reaches the section edge or leaks into the neighbor. With no
+   solid section fills, the washes are the only per-section color, so
+   keeping them a whisper is what lets the whole page read as one cool
+   porcelain canvas instead of a stack of differently-tinted blocks. */
+.wash-indigo {
+  background-image: radial-gradient(
+    100% 66% at 30% 50%,
+    rgba(67, 64, 189, 0.04),
+    transparent 46%
+  );
 }
-:root[data-theme="light"] .wash-emerald {
-  background-image:
-    radial-gradient(
-      90% 70% at 90% 0%,
-      rgba(16, 157, 114, 0.18),
-      transparent 55%
-    ),
-    radial-gradient(
-      70% 55% at 10% 100%,
-      rgba(9, 149, 198, 0.14),
-      transparent 60%
-    );
+.wash-gold {
+  background-image: radial-gradient(
+    100% 66% at 70% 50%,
+    rgba(217, 143, 31, 0.042),
+    transparent 46%
+  );
 }
-:root[data-theme="light"] .wash-violet {
-  background-image:
-    radial-gradient(
-      80% 70% at 50% 0%,
-      rgba(109, 40, 217, 0.17),
-      transparent 55%
-    ),
-    radial-gradient(
-      70% 60% at 85% 100%,
-      rgba(217, 54, 127, 0.15),
-      transparent 60%
-    );
+.wash-cyan {
+  background-image: radial-gradient(
+    100% 66% at 25% 50%,
+    rgba(9, 149, 198, 0.04),
+    transparent 46%
+  );
 }
-:root[data-theme="light"] .wash-coral {
-  background-image:
-    radial-gradient(
-      90% 70% at 20% 0%,
-      rgba(239, 86, 72, 0.17),
-      transparent 55%
-    ),
-    radial-gradient(
-      70% 60% at 80% 100%,
-      rgba(255, 158, 107, 0.22),
-      transparent 60%
-    );
+.wash-emerald {
+  background-image: radial-gradient(
+    100% 66% at 75% 50%,
+    rgba(16, 157, 114, 0.04),
+    transparent 46%
+  );
+}
+.wash-violet {
+  background-image: radial-gradient(
+    100% 66% at 50% 50%,
+    rgba(109, 40, 217, 0.036),
+    transparent 46%
+  );
+}
+.wash-coral {
+  background-image: radial-gradient(
+    100% 66% at 35% 50%,
+    rgba(239, 86, 72, 0.036),
+    transparent 46%
+  );
+}
+
+/* ---- site footer: grounded, premium terminal band ----
+   The footer is the page's last element, so unlike the mid-page sections it
+   carries its OWN opaque surface. That grounds the page and,
+   crucially, caps the body's corner color pools — otherwise the warm/teal
+   radials in --app-body leak a stray tinted strip below the content and read
+   as a phantom extra section. A hairline accent along the top edge, a soft
+   crown glow, and an oversized wordmark watermark give it a lit, finished
+   feel. */
+.site-footer {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: var(--color-ink-2);
+}
+/* thin accent rule that lights the seam where the page meets the footer */
+.site-footer::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--app-topline),
+    transparent
+  );
+}
+/* soft crown glow spilling down from the top edge */
+.site-footer::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 320px;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    64% 100% at 50% 0%,
+    var(--app-hero-glow-a),
+    transparent 72%
+  );
+}
+.footer-watermark {
+  position: absolute;
+  left: 50%;
+  bottom: -0.16em;
+  z-index: -1;
+  transform: translateX(-50%);
+  font-family: var(--font-fraunces), serif;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.8;
+  white-space: nowrap;
+  font-size: clamp(6rem, 24vw, 19rem);
+  color: color-mix(in srgb, var(--color-paper) 4%, transparent);
+  pointer-events: none;
+  user-select: none;
 }
 
 /* ---- link underline grow ---- */
@@ -423,55 +394,18 @@ body {
     );
 }
 
-/* ---- aurora field: slow, blurred, drifting color clouds ---- */
+/* ---- aurora field: slow, blurred, drifting color clouds ----
+   Jewel light drifting behind the hero on the cool porcelain canvas —
+   indigo and violet leading, studio teal and electric cyan cooling the low
+   corners, one warm magenta pool for contrast. Blurred wide and dialed
+   back so the porcelain stays luminous, not muddy. */
 .aurora {
   position: absolute;
   inset: -25%;
   z-index: 0;
   pointer-events: none;
-  filter: blur(64px) saturate(125%);
-  opacity: 0.55;
-  background:
-    radial-gradient(
-      32% 42% at 22% 28%,
-      rgba(221, 160, 90, 0.34),
-      transparent 62%
-    ),
-    radial-gradient(
-      28% 38% at 80% 18%,
-      rgba(217, 131, 99, 0.24),
-      transparent 60%
-    ),
-    radial-gradient(
-      38% 46% at 68% 82%,
-      rgba(123, 182, 161, 0.18),
-      transparent 62%
-    ),
-    radial-gradient(
-      30% 34% at 12% 82%,
-      rgba(124, 150, 201, 0.14),
-      transparent 60%
-    );
-  animation: aurora-drift 24s ease-in-out infinite alternate;
-}
-@keyframes aurora-drift {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
-  }
-  50% {
-    transform: translate3d(2.5%, -2%, 0) scale(1.1) rotate(2deg);
-  }
-  100% {
-    transform: translate3d(-2%, 1.5%, 0) scale(1.05) rotate(-1.5deg);
-  }
-}
-/* On the cool porcelain canvas the aurora is jewel light drifting behind
-   the hero — indigo and violet leading, studio teal and electric cyan
-   cooling the low corners, one warm magenta pool for contrast. Blurred
-   wide and dialed back so the porcelain stays luminous, not muddy. */
-:root[data-theme="light"] .aurora {
-  opacity: 0.5;
   filter: blur(76px) saturate(150%);
+  opacity: 0.5;
   background:
     radial-gradient(
       32% 42% at 22% 26%,
@@ -498,6 +432,18 @@ body {
       rgba(124, 58, 237, 0.16),
       transparent 60%
     );
+  animation: aurora-drift 24s ease-in-out infinite alternate;
+}
+@keyframes aurora-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(2.5%, -2%, 0) scale(1.1) rotate(2deg);
+  }
+  100% {
+    transform: translate3d(-2%, 1.5%, 0) scale(1.05) rotate(-1.5deg);
+  }
 }
 
 /* ---- fine background grid, faded at the edges ---- */
@@ -514,46 +460,87 @@ body {
   mask-image: radial-gradient(72% 62% at 50% 42%, #000 0%, transparent 82%);
 }
 
-/* ---- accent word: warm gradient fill for emphasized display words ---- */
+/* ---- accent word: jewel gradient fill for emphasized display words ----
+   Emphasized words refract from electric indigo through violet into rose
+   magenta — a cool-led jewel sweep against the ink. */
 .accent-word {
   font-style: italic;
   background: linear-gradient(
-    120deg,
-    var(--color-copper-soft),
-    var(--color-copper) 55%,
-    var(--color-terracotta)
+    115deg,
+    #4f46e5,
+    #7c3aed 28%,
+    #c026d3 50%,
+    #d9367f 66%,
+    #7c3aed 84%,
+    #4f46e5
   );
+  background-size: 220% 100%;
+  background-position: 0% 50%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  /* the jewel slowly refracts — a whisper of movement across every emphasized
+     word on the page, so the type feels lit rather than printed */
+  animation: accent-shimmer 9s ease-in-out infinite;
 }
-/* In daylight the emphasized words refract from electric indigo through
-   violet into rose magenta — a cool-led jewel sweep against the ink. */
-:root[data-theme="light"] .accent-word {
-  background: linear-gradient(
-    115deg,
-    #4f46e5,
-    #7c3aed 42%,
-    #c026d3 72%,
-    #d9367f
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
+@keyframes accent-shimmer {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
-/* ---- copper glow for primary CTAs ---- */
+/* ---- prism glow for primary CTAs ----
+   Primary CTAs wear the prism itself: an indigo → violet → magenta
+   gradient that outshines any flat fill. The gradient is a
+   background-image, so the button's bg-copper hover states keep working
+   underneath without a flash. */
 .glow-copper {
+  background-image: linear-gradient(
+    135deg,
+    #4f46e5,
+    #7c3aed 35%,
+    #c026d3 65%,
+    #4f46e5
+  );
+  background-size: 200% 100%;
+  background-position: 0% 50%;
   box-shadow: 0 10px 30px -12px var(--app-cta-glow);
+  transition: box-shadow 0.5s ease, background-position 0.6s ease;
 }
 .glow-copper:hover {
   box-shadow: 0 16px 44px -12px var(--app-cta-glow-hover);
+  /* the prism travels across the button on hover — a live sweep of light */
+  animation: cta-pan 2.6s linear infinite;
 }
-/* On the light canvas, primary CTAs wear the prism itself: an indigo →
-   violet → magenta gradient that outshines any flat fill. The gradient
-   is a background-image, so the button's bg-copper hover states keep
-   working underneath without a flash. */
-:root[data-theme="light"] .glow-copper {
-  background-image: linear-gradient(135deg, #4f46e5, #7c3aed 50%, #c026d3);
+@keyframes cta-pan {
+  to {
+    background-position: 200% 50%;
+  }
+}
+
+/* ---- venture feature pill: tactile accent chip ----
+   Base and hover colours both derive from the card's --pill accent (set
+   inline per venture), so the chip lifts and warms toward its own hue on
+   hover instead of staying a flat token. */
+.venture-pill {
+  --pill: currentColor;
+  border-color: color-mix(in srgb, var(--pill) 30%, transparent);
+  background: color-mix(in srgb, var(--pill) 9%, transparent);
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.4s ease,
+    background-color 0.4s ease,
+    color 0.4s ease;
+}
+.venture-pill:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--pill) 58%, transparent);
+  background: color-mix(in srgb, var(--pill) 18%, transparent);
+  color: var(--color-paper);
 }
 
 /* ---- custom cursor: hide the native pointer while active ---- */
@@ -569,20 +556,30 @@ body {
 /* ---- premium elevated card ----
    A layered surface: subtle top-lit gradient, a hairline that catches light
    at the top edge, and a soft drop shadow for depth. Hovering lifts the
-   border toward the accent and deepens the shadow. */
+   border toward the accent and deepens the shadow. Cards blend their
+   --card-accent into the surface so a grid reads as a set of tinted
+   panels — indigo, coral, teal, amber — instead of white boxes. Untinted
+   cards (--card-accent left at the surface) stay clean porcelain. */
 .card {
   /* Per-card accent. Defaults to the plain surface (a no-op mix), so a card
      stays neutral until a section sets --card-accent to a real hue. */
   --card-accent: var(--color-surface);
   position: relative;
   border-radius: 1.25rem;
-  border: 1px solid var(--color-hairline);
   background:
-    linear-gradient(180deg, var(--app-card-sheen), transparent 42%),
-    var(--color-surface);
+    linear-gradient(180deg, var(--app-card-sheen), transparent 52%),
+    linear-gradient(
+      158deg,
+      color-mix(in srgb, var(--card-accent) 22%, var(--color-surface)),
+      color-mix(in srgb, var(--card-accent) 9%, var(--color-surface))
+    );
+  border: 1px solid
+    color-mix(in srgb, var(--card-accent) 30%, var(--color-hairline));
   box-shadow:
     0 1px 0 0 var(--app-card-inset) inset,
-    var(--app-card-shadow);
+    0 1px 2px rgba(23, 25, 38, 0.05),
+    0 10px 24px -10px color-mix(in srgb, var(--card-accent) 40%, rgba(23, 25, 38, 0.12)),
+    0 30px 56px -28px color-mix(in srgb, var(--card-accent) 34%, rgba(23, 25, 38, 0.16));
   transition:
     border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
@@ -591,38 +588,6 @@ body {
 }
 .card-hover:hover {
   transform: translateY(-4px);
-  border-color: var(--app-card-border-hover);
-  box-shadow:
-    0 1px 0 0 var(--app-card-inset-strong) inset,
-    var(--app-card-shadow-hover);
-}
-
-/* ---- Light theme: colored card cores ----
-   In daylight, cards blend their --card-accent into the surface so a grid
-   reads as a set of tinted panels — indigo, coral, teal, amber — instead of
-   white boxes. A soft top sheen keeps them lit-from-above and premium; the
-   border and hover state pick up the same hue. Untinted cards (--card-accent
-   left at the surface) stay clean porcelain. The dark house look is untouched. */
-:root[data-theme="light"] .card {
-  background:
-    linear-gradient(180deg, var(--app-card-sheen), transparent 52%),
-    linear-gradient(
-      158deg,
-      color-mix(in srgb, var(--card-accent) 22%, var(--color-surface)),
-      color-mix(in srgb, var(--card-accent) 9%, var(--color-surface))
-    );
-  border-color: color-mix(
-    in srgb,
-    var(--card-accent) 30%,
-    var(--color-hairline)
-  );
-  box-shadow:
-    0 1px 0 0 var(--app-card-inset) inset,
-    0 1px 2px rgba(23, 25, 38, 0.05),
-    0 10px 24px -10px color-mix(in srgb, var(--card-accent) 40%, rgba(23, 25, 38, 0.12)),
-    0 30px 56px -28px color-mix(in srgb, var(--card-accent) 34%, rgba(23, 25, 38, 0.16));
-}
-:root[data-theme="light"] .card-hover:hover {
   border-color: color-mix(in srgb, var(--card-accent) 60%, transparent);
   box-shadow:
     0 1px 0 0 var(--app-card-inset-strong) inset,

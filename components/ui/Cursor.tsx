@@ -2,7 +2,6 @@
 
 import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useTheme } from "@/components/providers/ThemeProvider";
 
 /**
  * Bespoke cursor for fine-pointer devices: a precise accent dot that tracks
@@ -10,15 +9,13 @@ import { useTheme } from "@/components/providers/ThemeProvider";
  * compresses on press. Falls back to the native cursor on touch / reduced
  * motion (the component renders nothing and never hides the system pointer).
  */
+// Halo fill follows the primary accent: royal indigo on the Cinematic
+// Prism light canvas.
+const HALO = "rgba(67,64,189,0.10)";
+const HALO_OFF = "rgba(67,64,189,0)";
+
 export default function Cursor() {
   const reduce = useReducedMotion();
-  // Halo fill follows the theme's primary accent: copper in the dark
-  // house theme, royal indigo on the Cinematic Prism light canvas.
-  const { theme } = useTheme();
-  const halo =
-    theme === "light" ? "rgba(67,64,189,0.10)" : "rgba(221,160,90,0.10)";
-  const haloOff =
-    theme === "light" ? "rgba(67,64,189,0)" : "rgba(221,160,90,0)";
   const [enabled, setEnabled] = useState(false);
   const [hovering, setHovering] = useState(false);
   const [down, setDown] = useState(false);
@@ -79,7 +76,7 @@ export default function Cursor() {
             width: hovering ? 52 : 30,
             height: hovering ? 52 : 30,
             opacity: hovering ? 1 : 0.55,
-            backgroundColor: hovering ? halo : haloOff,
+            backgroundColor: hovering ? HALO : HALO_OFF,
             scale: down ? 0.82 : 1,
           }}
           transition={{ type: "spring", stiffness: 260, damping: 22 }}

@@ -11,7 +11,7 @@ export default function Ticker() {
   return (
     <div
       aria-hidden
-      className="relative overflow-hidden border-y hairline py-5 [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
+      className="relative overflow-hidden border-y section-edge py-5 [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
     >
       <div className="marquee flex w-max items-center gap-12">
         {row.map((item, i) => (

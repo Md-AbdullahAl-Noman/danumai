@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Reveal from "@/components/ui/Reveal";
 import WordReveal from "@/components/ui/WordReveal";
 
@@ -30,7 +30,29 @@ const principles = [
 
 export default function Approach() {
   const listRef = useRef<HTMLOListElement>(null);
+  const lastNodeRef = useRef<HTMLLIElement>(null);
   const reduce = useReducedMotion();
+  // Spine ends exactly at the last node's dot rather than the list's bottom
+  // edge, so it never dangles into the next section — regardless of how the
+  // copy wraps on narrow screens. Measured on mount and on any resize.
+  const [spineHeight, setSpineHeight] = useState<number>(0);
+  useEffect(() => {
+    const measure = () => {
+      const ol = listRef.current;
+      const last = lastNodeRef.current;
+      if (!ol || !last) return;
+      // Distance from the list top to the last node's dot centre.
+      setSpineHeight(last.offsetTop + 7);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (listRef.current) ro.observe(listRef.current);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
   // Timeline spine grows with reading position.
   const { scrollYProgress } = useScroll({
     target: listRef,
@@ -43,7 +65,7 @@ export default function Approach() {
   });
 
   return (
-    <section id="approach" className="wash-cyan scroll-mt-24 border-t hairline bg-ink-2">
+    <section id="approach" className="section-band wash-cyan scroll-mt-24 border-t section-edge">
       <div className="mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
         <div className="grid gap-12 md:grid-cols-[1fr_1.6fr]">
           <div className="md:sticky md:top-28 md:self-start">
@@ -60,20 +82,30 @@ export default function Approach() {
           </div>
 
           <div className="relative">
-            {/* Growing spine */}
+            {/* Growing spine — height is measured to stop at the last node's
+                dot, so the timeline terminates cleanly and never bleeds into
+                the next section on any screen size. */}
             <div
               aria-hidden
-              className="absolute bottom-0 left-[7px] top-0 w-px bg-paper/8"
+              style={{ height: spineHeight || undefined }}
+              className="absolute left-[7px] top-[0.4em] w-px bg-paper/8"
             />
             <motion.div
               aria-hidden
-              style={reduce ? { scaleY: 1 } : { scaleY: lineScale }}
-              className="absolute bottom-0 left-[7px] top-0 w-px origin-top bg-copper/60"
+              style={{
+                height: spineHeight || undefined,
+                ...(reduce ? { scaleY: 1 } : { scaleY: lineScale }),
+              }}
+              className="absolute left-[7px] top-[0.4em] w-px origin-top bg-copper/60"
             />
 
             <ol ref={listRef} className="space-y-0">
               {principles.map((p, i) => (
-                <li key={p.n} className="relative pl-12">
+                <li
+                  key={p.n}
+                  ref={i === principles.length - 1 ? lastNodeRef : undefined}
+                  className="relative pl-12"
+                >
                   <motion.span
                     aria-hidden
                     initial={reduce ? { opacity: 0 } : { scale: 0 }}
@@ -102,7 +134,7 @@ export default function Approach() {
                       delay: 0.1,
                       ease: [0.22, 1, 0.36, 1],
                     }}
-                    className="pb-14"
+                    className={i === principles.length - 1 ? "" : "pb-14"}
                   >
                     <span className="font-display text-sm text-copper">
                       {p.n}

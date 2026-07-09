@@ -2,9 +2,6 @@ import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
-import ThemeProvider, {
-  themeInitScript,
-} from "@/components/providers/ThemeProvider";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -47,22 +44,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      suppressHydrationWarning
       className={`${inter.variable} ${fraunces.variable} h-full antialiased`}
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-      </head>
       <body className="grain min-h-full flex flex-col bg-ink text-paper">
-        <ThemeProvider>
-          <SmoothScroll>
-            <Cursor />
-            <ScrollProgress />
-            <Nav />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </SmoothScroll>
-        </ThemeProvider>
+        <SmoothScroll>
+          <Cursor />
+          <ScrollProgress />
+          <Nav />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </SmoothScroll>
       </body>
     </html>
   );
