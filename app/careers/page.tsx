@@ -1,0 +1,75 @@
+import type { Metadata } from "next";
+import JobList from "@/components/careers/JobList";
+import Reveal from "@/components/ui/Reveal";
+import WordReveal from "@/components/ui/WordReveal";
+import MagneticButton from "@/components/ui/MagneticButton";
+
+export const metadata: Metadata = {
+  title: "Careers",
+  description:
+    "Join Danumai — engineers, designers, and storytellers building ventures we own and operate ourselves.",
+};
+
+export default function CareersPage() {
+  return (
+    <>
+      <section className="relative overflow-hidden">
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(55% 45% at 75% 15%, rgba(217,154,78,0.09), transparent 70%)",
+          }}
+        />
+        <div className="relative mx-auto max-w-6xl px-6 pb-16 pt-40 md:px-10 md:pt-48">
+          <Reveal y={16}>
+            <p className="text-xs uppercase tracking-[0.3em] text-copper">
+              Careers
+            </p>
+          </Reveal>
+          <WordReveal
+            as="h1"
+            text="Do the best work of your life, on things we actually own."
+            accentWords={["own"]}
+            delay={0.2}
+            className="mt-6 max-w-3xl font-display text-4xl leading-[1.1] tracking-tight text-paper sm:text-5xl md:text-6xl"
+          />
+          <Reveal delay={0.8}>
+            <p className="mt-8 max-w-xl text-base leading-relaxed text-mist">
+              Small team, long horizon, no client work. Every hour you spend
+              here goes into products Danumai runs — which means your craft
+              compounds instead of getting handed off.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 pb-28 md:px-10">
+        <Reveal>
+          <h2 className="mb-8 text-xs uppercase tracking-[0.25em] text-faint">
+            Open roles
+          </h2>
+        </Reveal>
+        <JobList />
+        <Reveal delay={0.2}>
+          <div className="card card-hover card-topline group mt-16 p-8 md:p-10">
+            <p className="font-display text-xl tracking-tight text-paper">
+              Don&rsquo;t see your role?
+            </p>
+            <p className="mt-3 max-w-lg text-sm leading-relaxed text-mist">
+              We hire for trajectory, not job descriptions. If you believe you
+              belong under this roof, make the case.
+            </p>
+            <MagneticButton
+              href="mailto:careers@danumai.com?subject=Open%20application"
+              className="sheen mt-6 inline-block rounded-full bg-copper px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-copper-soft"
+            >
+              Write to us
+            </MagneticButton>
+          </div>
+        </Reveal>
+      </section>
+    </>
+  );
+}
