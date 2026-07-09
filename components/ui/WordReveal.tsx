@@ -30,7 +30,7 @@ export default function WordReveal({
           <motion.span
             className={`inline-block ${
               accentWords.includes(word.replace(/[.,]/g, ""))
-                ? "text-copper italic"
+                ? "accent-word"
                 : ""
             }`}
             initial={reduce ? { opacity: 0 } : { y: "110%", rotate: 2.5 }}

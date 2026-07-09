@@ -62,8 +62,8 @@ export default function CareersPage() {
               belong under this roof, make the case.
             </p>
             <MagneticButton
-              href="mailto:careers@danumai.com?subject=Open%20application"
-              className="sheen mt-6 inline-block rounded-full bg-copper px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-copper-soft"
+              href="/contact?topic=Careers"
+              className="glow-copper sheen mt-6 inline-block rounded-full bg-copper px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-copper-soft"
             >
               Write to us
             </MagneticButton>

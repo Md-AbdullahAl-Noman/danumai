@@ -16,12 +16,21 @@ const links = [
 
 type Bubble = { left: number; width: number; visible: boolean };
 
-const PILL_TRANSITION = { type: "spring", stiffness: 500, damping: 40, mass: 0.8 } as const;
+const PILL_TRANSITION = {
+  type: "spring",
+  stiffness: 500,
+  damping: 40,
+  mass: 0.8,
+} as const;
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [bubble, setBubble] = useState<Bubble>({ left: 0, width: 0, visible: false });
+  const [bubble, setBubble] = useState<Bubble>({
+    left: 0,
+    width: 0,
+    visible: false,
+  });
   const itemRefs = useRef<Record<string, HTMLLIElement | null>>({});
   const listRef = useRef<HTMLUListElement | null>(null);
   const pathname = usePathname();
@@ -76,7 +85,11 @@ export default function Nav() {
         <svg className="absolute h-0 w-0" aria-hidden focusable="false">
           <defs>
             <filter id="nav-goo">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+              <feGaussianBlur
+                in="SourceGraphic"
+                stdDeviation="4"
+                result="blur"
+              />
               <feColorMatrix
                 in="blur"
                 mode="matrix"
@@ -88,89 +101,93 @@ export default function Nav() {
           </defs>
         </svg>
 
-        <div className="relative hidden md:block">
-          {/* goo bubble layer, isolated from the text so only the pill gets the liquid filter.
+        <div className="flex items-center gap-2 md:gap-5">
+          <div className="relative hidden md:block">
+            {/* goo bubble layer, isolated from the text so only the pill gets the liquid filter.
               Shapes must be solid alpha — the goo filter's threshold matrix crushes translucent
               fills to zero — so opacity is dimmed on the wrapper *after* the filter runs. */}
-          <div
-            className="pointer-events-none absolute inset-0 overflow-hidden opacity-40"
-            style={{ filter: "url(#nav-goo)" }}
-          >
-            {/* stable pill: critically damped spring, no overshoot */}
-            <motion.div
-              className="absolute top-1/2 h-9 -translate-y-1/2 rounded-full bg-copper"
-              animate={{
-                left: bubble.left,
-                width: bubble.width,
-                opacity: bubble.visible ? 1 : 0,
-              }}
-              transition={{
-                left: PILL_TRANSITION,
-                width: PILL_TRANSITION,
-                opacity: { duration: 0.18 },
-              }}
-            />
+            <div
+              className="pointer-events-none absolute inset-0 overflow-hidden opacity-40"
+              style={{ filter: "url(#nav-goo)" }}
+            >
+              {/* stable pill: critically damped spring, no overshoot */}
+              <motion.div
+                className="absolute top-1/2 h-9 -translate-y-1/2 rounded-full bg-copper"
+                animate={{
+                  left: bubble.left,
+                  width: bubble.width,
+                  opacity: bubble.visible ? 1 : 0,
+                }}
+                transition={{
+                  left: PILL_TRANSITION,
+                  width: PILL_TRANSITION,
+                  opacity: { duration: 0.18 },
+                }}
+              />
+            </div>
+
+            <ul
+              ref={listRef}
+              className="relative flex items-center"
+              onMouseLeave={() => setBubble((b) => ({ ...b, visible: false }))}
+            >
+              {links.map((link) => (
+                <li
+                  key={link.href}
+                  ref={(el) => {
+                    itemRefs.current[link.href] = el;
+                  }}
+                >
+                  <Link
+                    href={link.href}
+                    onMouseEnter={() => moveTo(link.href)}
+                    className="relative block px-4 py-2 text-sm text-mist transition-colors duration-300 hover:text-paper"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <ul
-            ref={listRef}
-            className="relative flex items-center"
-            onMouseLeave={() => setBubble((b) => ({ ...b, visible: false }))}
+          <MagneticButton
+            href="/contact"
+            className="sheen hidden rounded-full border hairline px-5 py-2 text-sm text-paper transition-colors hover:border-copper/40 hover:text-copper-soft md:inline-block"
           >
-            {links.map((link) => (
-              <li
-                key={link.href}
-                ref={(el) => {
-                  itemRefs.current[link.href] = el;
-                }}
-              >
-                <Link
-                  href={link.href}
-                  onMouseEnter={() => moveTo(link.href)}
-                  className="relative block px-4 py-2 text-sm text-mist transition-colors duration-300 hover:text-paper"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+            Get in touch
+          </MagneticButton>
+
+          {/* Mobile menu toggle */}
+          <button
+            type="button"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
+            onClick={() => setMenuOpen((v) => !v)}
+            className="relative -mr-2 flex h-10 w-10 items-center justify-center text-paper md:hidden"
+          >
+            <span className="sr-only">Menu</span>
+            <span aria-hidden className="relative block h-4 w-6">
+              <span
+                className={`absolute left-0 block h-px w-6 bg-current transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  menuOpen ? "top-1/2 -translate-y-1/2 rotate-45" : "top-0.5"
+                }`}
+              />
+              <span
+                className={`absolute left-0 top-1/2 block h-px w-6 -translate-y-1/2 bg-current transition-opacity duration-200 ${
+                  menuOpen ? "opacity-0" : "opacity-100"
+                }`}
+              />
+              <span
+                className={`absolute left-0 block h-px w-6 bg-current transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  menuOpen
+                    ? "top-1/2 -translate-y-1/2 -rotate-45"
+                    : "bottom-0.5"
+                }`}
+              />
+            </span>
+          </button>
         </div>
-
-        <MagneticButton
-          href="/contact"
-          className="sheen hidden rounded-full border hairline px-5 py-2 text-sm text-paper transition-colors hover:border-copper/40 hover:text-copper-soft md:inline-block"
-        >
-          Get in touch
-        </MagneticButton>
-
-        {/* Mobile menu toggle */}
-        <button
-          type="button"
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={menuOpen}
-          aria-controls="mobile-menu"
-          onClick={() => setMenuOpen((v) => !v)}
-          className="relative -mr-2 flex h-10 w-10 items-center justify-center text-paper md:hidden"
-        >
-          <span className="sr-only">Menu</span>
-          <span aria-hidden className="relative block h-4 w-6">
-            <span
-              className={`absolute left-0 block h-px w-6 bg-current transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                menuOpen ? "top-1/2 -translate-y-1/2 rotate-45" : "top-0.5"
-              }`}
-            />
-            <span
-              className={`absolute left-0 top-1/2 block h-px w-6 -translate-y-1/2 bg-current transition-opacity duration-200 ${
-                menuOpen ? "opacity-0" : "opacity-100"
-              }`}
-            />
-            <span
-              className={`absolute left-0 block h-px w-6 bg-current transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                menuOpen ? "top-1/2 -translate-y-1/2 -rotate-45" : "bottom-0.5"
-              }`}
-            />
-          </span>
-        </button>
       </nav>
 
       {/* Mobile dropdown panel */}

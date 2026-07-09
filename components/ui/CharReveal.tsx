@@ -34,7 +34,7 @@ export default function CharReveal({
             key={wi}
             aria-hidden
             className={`inline-block will-change-[transform,filter] ${
-              accent ? "text-copper italic" : ""
+              accent ? "accent-word" : ""
             }`}
             initial={
               reduce

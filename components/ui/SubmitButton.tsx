@@ -25,7 +25,7 @@ export default function SubmitButton({
       disabled={state !== "idle"}
       whileTap={state === "idle" ? { scale: 0.965 } : undefined}
       transition={{ type: "spring", stiffness: 400, damping: 22 }}
-      className={`sheen relative inline-flex min-w-44 items-center justify-center gap-2 overflow-hidden rounded-full px-7 py-3 text-sm font-medium transition-colors duration-500 ${
+      className={`glow-copper sheen relative inline-flex min-w-44 items-center justify-center gap-2 overflow-hidden rounded-full px-7 py-3 text-sm font-medium transition-colors duration-500 ${
         state === "success"
           ? "bg-copper-soft text-ink"
           : "bg-copper text-ink hover:bg-copper-soft"

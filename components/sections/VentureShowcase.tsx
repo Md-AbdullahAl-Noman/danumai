@@ -192,15 +192,35 @@ function DeckCard({
 
 /* ---------- the venture card itself ---------- */
 function VentureCard({ v }: { v: (typeof ventures)[number] }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+    el.style.setProperty("--my", `${e.clientY - rect.top}px`);
+  };
+
   return (
     <div
+      ref={ref}
+      onMouseMove={onMouseMove}
       style={{
         borderColor: `${v.accent}33`,
         background: `radial-gradient(120% 90% at 100% 0%, ${v.accent}22, transparent 55%), linear-gradient(160deg, ${v.accent}14, transparent 46%), var(--color-surface)`,
         boxShadow: `0 44px 110px -42px rgba(0,0,0,0.9), 0 1px 0 0 rgba(241,236,228,0.05) inset, 0 0 0 1px ${v.accent}1a inset`,
       }}
-      className="relative grid h-full grid-cols-1 gap-4 overflow-hidden rounded-3xl border p-4 sm:gap-6 sm:p-5 md:grid-cols-2 md:gap-8 md:p-6"
+      className="group relative grid h-full grid-cols-1 gap-4 overflow-hidden rounded-3xl border p-4 sm:gap-6 sm:p-5 md:grid-cols-2 md:gap-8 md:p-6"
     >
+      {/* accent spotlight that trails the cursor */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{
+          background: `radial-gradient(340px circle at var(--mx, 50%) var(--my, 50%), ${v.accent}24, transparent 62%)`,
+        }}
+      />
+
       {/* accent hairline along the top edge — what peeks when stacked */}
       <span
         aria-hidden
@@ -211,7 +231,7 @@ function VentureCard({ v }: { v: (typeof ventures)[number] }) {
       />
 
       {/* Art */}
-      <div className="relative h-32 overflow-hidden rounded-2xl border hairline bg-ink-3 sm:h-44 md:h-full md:max-h-80">
+      <div className="relative z-10 h-32 overflow-hidden rounded-2xl border hairline bg-ink-3 sm:h-44 md:h-full md:max-h-80">
         <v.Art />
         <span
           className="absolute right-3 top-3 rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.15em] backdrop-blur-sm"
@@ -226,7 +246,7 @@ function VentureCard({ v }: { v: (typeof ventures)[number] }) {
       </div>
 
       {/* Copy */}
-      <div className="flex flex-col justify-center">
+      <div className="relative z-10 flex flex-col justify-center">
         <span className="font-display text-xs" style={{ color: v.accent }}>
           {v.index}
         </span>

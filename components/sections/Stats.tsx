@@ -1,5 +1,6 @@
 import CountUp from "@/components/ui/CountUp";
 import Reveal from "@/components/ui/Reveal";
+import SpotlightCard from "@/components/ui/SpotlightCard";
 
 const stats = [
   { value: 3, suffix: "", label: "Ventures in motion" },
@@ -11,24 +12,24 @@ const stats = [
 export default function Stats() {
   return (
     <section className="border-t hairline bg-ink-2">
-      <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-24">
-        <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto max-w-6xl px-6 py-14 md:px-10 md:py-24">
+        <dl className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {stats.map((s, i) => (
             <Reveal key={s.label} delay={i * 0.1} className="h-full">
-              <div className="card card-hover card-topline group h-full p-6 md:p-7">
+              <SpotlightCard className="card card-hover card-topline h-full p-4 sm:p-6 md:p-7">
                 <span
                   aria-hidden
-                  className="mb-6 block text-xs font-medium tracking-[0.2em] text-copper/70"
+                  className="mb-3 block text-[11px] font-medium tracking-[0.2em] text-copper/70 sm:mb-6 sm:text-xs"
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <dd className="font-display text-5xl tracking-tight text-paper md:text-6xl">
+                <dd className="font-display text-3xl tracking-tight text-paper sm:text-5xl md:text-6xl">
                   <CountUp value={s.value} suffix={s.suffix} />
                 </dd>
-                <dt className="mt-3 text-sm leading-relaxed text-mist">
+                <dt className="mt-2 text-xs leading-relaxed text-mist sm:mt-3 sm:text-sm">
                   {s.label}
                 </dt>
-              </div>
+              </SpotlightCard>
             </Reveal>
           ))}
         </dl>

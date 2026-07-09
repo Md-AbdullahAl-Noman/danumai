@@ -43,6 +43,10 @@ export default function Hero() {
       onMouseMove={onMouseMove}
       className="relative flex min-h-screen flex-col justify-center overflow-hidden"
     >
+      {/* Aurora + grid substrate */}
+      <div aria-hidden className="aurora" />
+      <div aria-hidden className="absolute inset-0 bg-grid" />
+
       {/* Ambient light field — follows the cursor, breathes on its own */}
       <motion.div
         aria-hidden
@@ -74,14 +78,20 @@ export default function Hero() {
         className="relative mx-auto w-full max-w-6xl px-6 pt-28 pb-16 md:px-10"
       >
         <motion.div style={{ y: exitY, opacity: exitOpacity }}>
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.15, ease: EASE }}
-            className="text-xs uppercase tracking-[0.3em] text-copper"
+            className="inline-flex items-center gap-2.5 rounded-full border border-hairline bg-ink-2/60 py-1.5 pl-2.5 pr-4 backdrop-blur-sm"
           >
-            Danumai Inc.
-          </motion.p>
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-copper/50" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-copper" />
+            </span>
+            <span className="text-[11px] uppercase tracking-[0.25em] text-mist">
+              Danumai Inc. — building in 2026
+            </span>
+          </motion.div>
 
           <CharReveal
             text="A house of ventures, built and operated under one roof."
@@ -110,7 +120,7 @@ export default function Hero() {
             <MagneticButton
               href="#ventures"
               strength={0.15}
-              className="sheen group inline-flex items-center gap-2 rounded-full bg-copper px-6 py-3 text-sm font-medium text-ink transition-[background-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-copper-soft hover:shadow-[0_14px_34px_-14px_rgba(217,154,78,0.65)]"
+              className="glow-copper sheen group inline-flex items-center gap-2 rounded-full bg-copper px-6 py-3 text-sm font-medium text-ink transition-[background-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-copper-soft"
             >
               Explore the ventures
               <span

@@ -5,6 +5,7 @@ import SmoothScroll from "@/components/providers/SmoothScroll";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import ScrollProgress from "@/components/ScrollProgress";
+import Cursor from "@/components/ui/Cursor";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -44,6 +45,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${fraunces.variable} h-full antialiased`}>
       <body className="grain min-h-full flex flex-col bg-ink text-paper">
         <SmoothScroll>
+          <Cursor />
           <ScrollProgress />
           <Nav />
           <main className="flex-1">{children}</main>
