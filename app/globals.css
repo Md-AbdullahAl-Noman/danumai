@@ -273,25 +273,6 @@ body {
 .hairline {
   border-color: var(--color-hairline);
 }
-/* Light theme: full-bleed section dividers become a refined refracted
-   hairline — a cool jewel sweep that fades in from the edges so it reads
-   as a whisper of light between acts, not a loud rainbow rule. Only
-   straight edges (sections, footer) get this; rounded elements keep
-   plain hairlines. */
-:root[data-theme="light"] section.border-t.hairline,
-:root[data-theme="light"] footer.border-t.hairline {
-  border-image: linear-gradient(
-      90deg,
-      transparent,
-      rgba(79, 70, 229, 0.4) 22%,
-      rgba(124, 58, 237, 0.42) 40%,
-      rgba(192, 38, 211, 0.4) 58%,
-      rgba(13, 148, 136, 0.38) 80%,
-      transparent
-    )
-    1;
-}
-
 /* ---- Cinematic Prism section washes ----
    Each act of the page leads with its own dominant color family. The
    classes are inert in the dark theme (the house look stays untouched)
@@ -590,6 +571,9 @@ body {
    at the top edge, and a soft drop shadow for depth. Hovering lifts the
    border toward the accent and deepens the shadow. */
 .card {
+  /* Per-card accent. Defaults to the plain surface (a no-op mix), so a card
+     stays neutral until a section sets --card-accent to a real hue. */
+  --card-accent: var(--color-surface);
   position: relative;
   border-radius: 1.25rem;
   border: 1px solid var(--color-hairline);
@@ -611,6 +595,40 @@ body {
   box-shadow:
     0 1px 0 0 var(--app-card-inset-strong) inset,
     var(--app-card-shadow-hover);
+}
+
+/* ---- Light theme: colored card cores ----
+   In daylight, cards blend their --card-accent into the surface so a grid
+   reads as a set of tinted panels — indigo, coral, teal, amber — instead of
+   white boxes. A soft top sheen keeps them lit-from-above and premium; the
+   border and hover state pick up the same hue. Untinted cards (--card-accent
+   left at the surface) stay clean porcelain. The dark house look is untouched. */
+:root[data-theme="light"] .card {
+  background:
+    linear-gradient(180deg, var(--app-card-sheen), transparent 52%),
+    linear-gradient(
+      158deg,
+      color-mix(in srgb, var(--card-accent) 22%, var(--color-surface)),
+      color-mix(in srgb, var(--card-accent) 9%, var(--color-surface))
+    );
+  border-color: color-mix(
+    in srgb,
+    var(--card-accent) 30%,
+    var(--color-hairline)
+  );
+  box-shadow:
+    0 1px 0 0 var(--app-card-inset) inset,
+    0 1px 2px rgba(23, 25, 38, 0.05),
+    0 10px 24px -10px color-mix(in srgb, var(--card-accent) 40%, rgba(23, 25, 38, 0.12)),
+    0 30px 56px -28px color-mix(in srgb, var(--card-accent) 34%, rgba(23, 25, 38, 0.16));
+}
+:root[data-theme="light"] .card-hover:hover {
+  border-color: color-mix(in srgb, var(--card-accent) 60%, transparent);
+  box-shadow:
+    0 1px 0 0 var(--app-card-inset-strong) inset,
+    0 2px 4px rgba(23, 25, 38, 0.06),
+    0 16px 34px -10px color-mix(in srgb, var(--card-accent) 46%, rgba(23, 25, 38, 0.16)),
+    0 42px 76px -30px color-mix(in srgb, var(--card-accent) 40%, rgba(23, 25, 38, 0.2));
 }
 /* accent hairline that lights the top edge of a card on hover */
 .card-topline::before {

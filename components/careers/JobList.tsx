@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import SubmitButton, { type SubmitState } from "@/components/ui/SubmitButton";
 
 type Job = {
@@ -89,6 +89,7 @@ function ApplyForm({ jobTitle }: { jobTitle: string }) {
     <form
       onSubmit={onSubmit}
       className="card mt-8 p-5 md:p-6"
+      style={{ "--card-accent": "#4f46e5" } as CSSProperties}
     >
       <p className="text-xs uppercase tracking-[0.2em] text-faint">
         Apply for this role

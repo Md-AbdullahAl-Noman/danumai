@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import JobList from "@/components/careers/JobList";
 import Reveal from "@/components/ui/Reveal";
@@ -53,7 +54,10 @@ export default function CareersPage() {
         </Reveal>
         <JobList />
         <Reveal delay={0.2}>
-          <div className="card card-hover card-topline group mt-16 p-8 md:p-10">
+          <div
+            className="card card-hover card-topline group mt-16 p-8 md:p-10"
+            style={{ "--card-accent": "#0d9488" } as CSSProperties}
+          >
             <p className="font-display text-xl tracking-tight text-paper">
               Don&rsquo;t see your role?
             </p>

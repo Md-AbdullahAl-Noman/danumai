@@ -1,12 +1,13 @@
+import type { CSSProperties } from "react";
 import CountUp from "@/components/ui/CountUp";
 import Reveal from "@/components/ui/Reveal";
 import SpotlightCard from "@/components/ui/SpotlightCard";
 
 const stats = [
-  { value: 3, suffix: "", label: "Ventures in motion" },
-  { value: 1, suffix: "", label: "Shared platform beneath them" },
-  { value: 300, suffix: "M+", label: "Bangla speakers we build for" },
-  { value: 0, suffix: "", label: "Clients — by design" },
+  { value: 3, suffix: "", label: "Ventures in motion", accent: "#4f46e5" },
+  { value: 1, suffix: "", label: "Shared platform beneath them", accent: "#e0402f" },
+  { value: 300, suffix: "M+", label: "Bangla speakers we build for", accent: "#0d9488" },
+  { value: 0, suffix: "", label: "Clients — by design", accent: "#d97706" },
 ];
 
 export default function Stats() {
@@ -16,10 +17,14 @@ export default function Stats() {
         <dl className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {stats.map((s, i) => (
             <Reveal key={s.label} delay={i * 0.1} className="h-full">
-              <SpotlightCard className="card card-hover card-topline h-full p-4 sm:p-6 md:p-7">
+              <SpotlightCard
+                className="card card-hover card-topline h-full p-4 sm:p-6 md:p-7"
+                style={{ "--card-accent": s.accent } as CSSProperties}
+              >
                 <span
                   aria-hidden
-                  className="mb-3 block text-[11px] font-medium tracking-[0.2em] text-copper/70 sm:mb-6 sm:text-xs"
+                  className="mb-3 block text-[11px] font-medium tracking-[0.2em] sm:mb-6 sm:text-xs"
+                  style={{ color: s.accent }}
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>

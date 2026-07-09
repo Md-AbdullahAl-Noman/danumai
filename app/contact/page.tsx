@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import ContactForm from "@/components/contact/ContactForm";
@@ -73,7 +74,10 @@ export default function ContactPage() {
                     Dhaka, Bangladesh · Remote across time zones
                   </p>
                 </div>
-                <div className="card p-6">
+                <div
+                  className="card p-6"
+                  style={{ "--card-accent": "#e0402f" } as CSSProperties}
+                >
                   <p className="text-sm leading-relaxed text-mist">
                     We read everything. Short and concrete beats long and
                     polished — tell us what you want to make happen.
@@ -84,7 +88,10 @@ export default function ContactPage() {
           </div>
 
           <Reveal delay={0.15}>
-            <div className="card p-7 md:p-10">
+            <div
+              className="card p-7 md:p-10"
+              style={{ "--card-accent": "#4f46e5" } as CSSProperties}
+            >
               <Suspense fallback={null}>
                 <ContactForm />
               </Suspense>

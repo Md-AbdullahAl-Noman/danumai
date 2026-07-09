@@ -24,7 +24,7 @@ const ventures = [
     status: "In development",
     features: ["Vertical serials", "Episode unlocks", "Creator tooling", "Offline-first"],
     accent: "#dda05a",
-    accentLight: "#c77c0a", // golden spotlight
+    accentLight: "#d97706", // warm amber
     Art: ReelsArt,
   },
   {
@@ -36,7 +36,7 @@ const ventures = [
     status: "In development",
     features: ["Writers' room", "Vertical-first production", "Owned IP", "Fast cycles"],
     accent: "#d98363",
-    accentLight: "#e04435", // cinema coral
+    accentLight: "#e0402f", // signal coral
     Art: StudiosArt,
   },
   {
@@ -48,7 +48,7 @@ const ventures = [
     status: "Research",
     features: ["Shift coordination", "Family updates", "Care logs", "Gentle reminders"],
     accent: "#7bb6a1",
-    accentLight: "#0f9168", // emerald studio
+    accentLight: "#0d9488", // studio teal
     Art: CareArt,
   },
 ];
@@ -67,19 +67,17 @@ export default function VentureShowcase() {
   });
 
   const header = (
-    <div className="flex flex-wrap items-end justify-between gap-6">
-      <div>
-        <Reveal>
-          <p className="text-xs uppercase tracking-[0.3em] text-copper">Ventures</p>
-        </Reveal>
-        <WordReveal
-          text="Three bets, one conviction."
-          accentWords={["bets", "conviction"]}
-          className="mt-4 max-w-2xl font-display text-3xl tracking-tight text-paper md:text-5xl"
-        />
-      </div>
+    <div>
+      <Reveal>
+        <p className="text-xs uppercase tracking-[0.3em] text-copper">Ventures</p>
+      </Reveal>
+      <WordReveal
+        text="Three bets, one conviction."
+        accentWords={["bets", "conviction"]}
+        className="mt-4 max-w-2xl font-display text-3xl tracking-tight text-paper md:text-5xl"
+      />
       <Reveal delay={0.25}>
-        <p className="max-w-xs text-sm leading-relaxed text-mist">
+        <p className="mt-4 max-w-xl text-sm leading-relaxed text-mist sm:text-base">
           Each venture stands on the same in-house platform — and each one is a
           product we run ourselves.
         </p>
@@ -112,19 +110,17 @@ export default function VentureShowcase() {
         <div aria-hidden className="wash-indigo absolute left-0 top-0 h-screen w-full" />
       </div>
 
-      <div className="mx-auto max-w-6xl px-6 pt-24 md:px-10 md:pt-32">
-        {header}
-      </div>
-
-      {/* Scroll-driven deck: one pinned, vertically centered stage. Cards
-          are positioned by JS scroll progress so stacking, dwell and
-          release are exact. Track height = travel budget, no dead scroll. */}
+      {/* Scroll-driven deck: header and cards are pinned together in one
+          stage, so the copy stays put instead of leaving dead space behind
+          once it scrolls out of view. Track height = travel budget, no
+          dead scroll. */}
       <div
         ref={listRef}
         style={{ height: `${TRACK_UNITS * 100}vh` }}
         className="relative"
       >
-        <div className="sticky top-0 flex h-screen flex-col justify-center">
+        <div className="sticky top-0 flex h-screen flex-col justify-center gap-8 py-24 md:gap-10 md:py-32">
+          <div className="mx-auto w-full max-w-6xl px-6 md:px-10">{header}</div>
           <div className="mx-auto w-full max-w-6xl px-6 md:px-10">
             <div className="relative h-108 sm:h-120 md:h-[min(30rem,72svh)]">
               {ventures.map((v, i) => (
@@ -206,7 +202,16 @@ function VentureCard({ v }: { v: (typeof ventures)[number] }) {
   // In light mode each venture refracts into its Cinematic Prism family —
   // deeper, more saturated hues that hold contrast on the white canvas.
   const { theme } = useTheme();
-  const accent = theme === "light" ? v.accentLight : v.accent;
+  const light = theme === "light";
+  const accent = light ? v.accentLight : v.accent;
+  // In daylight the venture card carries a clearly colored core — a stronger
+  // accent wash over the porcelain surface — so it reads as a tinted panel,
+  // not a white box. The dark theme keeps its subtle top-corner glow.
+  const cardBg = light
+    ? `radial-gradient(120% 90% at 100% 0%, ${accent}40, transparent 58%), linear-gradient(158deg, ${accent}28, ${accent}12 52%, transparent 76%), var(--color-surface)`
+    : `radial-gradient(120% 90% at 100% 0%, ${accent}22, transparent 55%), linear-gradient(160deg, ${accent}14, transparent 46%), var(--color-surface)`;
+  const cardBorder = light ? `${accent}55` : `${accent}33`;
+  const cardRing = light ? `${accent}33` : `${accent}1a`;
   const ref = useRef<HTMLDivElement>(null);
   const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const el = ref.current;
@@ -221,9 +226,9 @@ function VentureCard({ v }: { v: (typeof ventures)[number] }) {
       ref={ref}
       onMouseMove={onMouseMove}
       style={{
-        borderColor: `${accent}33`,
-        background: `radial-gradient(120% 90% at 100% 0%, ${accent}22, transparent 55%), linear-gradient(160deg, ${accent}14, transparent 46%), var(--color-surface)`,
-        boxShadow: `0 44px 110px -42px var(--app-venture-drop), 0 1px 0 0 var(--app-card-inset) inset, 0 0 0 1px ${accent}1a inset`,
+        borderColor: cardBorder,
+        background: cardBg,
+        boxShadow: `0 44px 110px -42px var(--app-venture-drop), 0 1px 0 0 var(--app-card-inset) inset, 0 0 0 1px ${cardRing} inset`,
       }}
       className="group relative grid h-full grid-cols-1 gap-4 overflow-hidden rounded-3xl border p-4 sm:gap-6 sm:p-5 md:grid-cols-2 md:gap-8 md:p-6"
     >

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import { useRef, type CSSProperties, type ReactNode } from "react";
 
 /**
  * Card surface that tracks the cursor: a soft radial highlight (the `.cursor-glow`
@@ -11,9 +11,11 @@ import { useRef, type ReactNode } from "react";
 export default function SpotlightCard({
   children,
   className = "",
+  style,
 }: {
   children: ReactNode;
   className?: string;
+  style?: CSSProperties;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -29,6 +31,7 @@ export default function SpotlightCard({
     <div
       ref={ref}
       onMouseMove={onMouseMove}
+      style={style}
       className={`group relative overflow-hidden ${className}`}
     >
       <span

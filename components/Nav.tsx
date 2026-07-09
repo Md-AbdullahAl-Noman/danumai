@@ -32,8 +32,10 @@ export default function Nav() {
     width: 0,
     visible: false,
   });
+  const [activeHref, setActiveHref] = useState<string | null>(null);
   const itemRefs = useRef<Record<string, HTMLLIElement | null>>({});
   const listRef = useRef<HTMLUListElement | null>(null);
+  const hoveringRef = useRef(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -42,6 +44,50 @@ export default function Nav() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Track which section is in view and sync the pill to it, unless the
+  // user is actively hovering the nav (hover takes priority).
+  useEffect(() => {
+    if (pathname !== "/") {
+      setActiveHref(null);
+      return;
+    }
+
+    const sectionLinks = links.filter((link) => link.href.startsWith("/#"));
+    const sections = sectionLinks
+      .map((link) => ({
+        href: link.href,
+        el: document.getElementById(link.href.slice(2)),
+      }))
+      .filter((s): s is { href: string; el: HTMLElement } => !!s.el);
+
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!visible) return;
+        const match = sections.find((s) => s.el === visible.target);
+        if (match) setActiveHref(match.href);
+      },
+      { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
+    );
+
+    sections.forEach((s) => observer.observe(s.el));
+    return () => observer.disconnect();
+  }, [pathname]);
+
+  useEffect(() => {
+    if (hoveringRef.current) return;
+    if (activeHref) {
+      moveTo(activeHref);
+    } else {
+      setBubble((b) => ({ ...b, visible: false }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeHref]);
 
   // Close the mobile menu on any navigation.
   useEffect(() => {
@@ -130,7 +176,14 @@ export default function Nav() {
             <ul
               ref={listRef}
               className="relative flex items-center"
-              onMouseLeave={() => setBubble((b) => ({ ...b, visible: false }))}
+              onMouseLeave={() => {
+                hoveringRef.current = false;
+                if (activeHref) {
+                  moveTo(activeHref);
+                } else {
+                  setBubble((b) => ({ ...b, visible: false }));
+                }
+              }}
             >
               {links.map((link) => (
                 <li
@@ -141,8 +194,13 @@ export default function Nav() {
                 >
                   <Link
                     href={link.href}
-                    onMouseEnter={() => moveTo(link.href)}
-                    className="relative block px-4 py-2 text-sm text-mist transition-colors duration-300 hover:text-paper"
+                    onMouseEnter={() => {
+                      hoveringRef.current = true;
+                      moveTo(link.href);
+                    }}
+                    className={`relative block px-4 py-2 text-sm transition-colors duration-300 hover:text-paper ${
+                      activeHref === link.href ? "text-paper" : "text-mist"
+                    }`}
                   >
                     {link.label}
                   </Link>
