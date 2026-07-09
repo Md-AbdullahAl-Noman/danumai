@@ -67,7 +67,7 @@ export default function Approach() {
   return (
     <section id="approach" className="section-band wash-cyan scroll-mt-24 border-t section-edge">
       <div className="mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
-        <div className="grid gap-12 md:grid-cols-[1fr_1.6fr]">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-[1fr_1.6fr]">
           <div className="md:sticky md:top-28 md:self-start">
             <Reveal>
               <p className="text-xs uppercase tracking-[0.3em] text-copper">

@@ -226,12 +226,21 @@ body {
    solid section fills, the washes are the only per-section color, so
    keeping them a whisper is what lets the whole page read as one cool
    porcelain canvas instead of a stack of differently-tinted blocks. */
+/* Each wash also BREATHES. Critical constraint: these classes live on the
+   content-bearing <section> itself, so animating the element's `opacity`
+   would fade the text and cards too. Instead each act keyframes only its own
+   background-image — structurally identical gradients (same shape, position,
+   radius; only the color-stop alpha changes) interpolate smoothly, so the hue
+   swells and settles while position + radius stay pinned. The "centered,
+   fades early, never touches an edge" guarantee is therefore untouched and no
+   seam can appear. Staggered durations keep neighboring acts out of lockstep. */
 .wash-indigo {
   background-image: radial-gradient(
     100% 66% at 30% 50%,
     rgba(67, 64, 189, 0.04),
     transparent 46%
   );
+  animation: wash-indigo-breathe 18s ease-in-out infinite;
 }
 .wash-gold {
   background-image: radial-gradient(
@@ -239,6 +248,7 @@ body {
     rgba(217, 143, 31, 0.042),
     transparent 46%
   );
+  animation: wash-gold-breathe 21s ease-in-out -4s infinite;
 }
 .wash-cyan {
   background-image: radial-gradient(
@@ -246,6 +256,7 @@ body {
     rgba(9, 149, 198, 0.04),
     transparent 46%
   );
+  animation: wash-cyan-breathe 24s ease-in-out -8s infinite;
 }
 .wash-emerald {
   background-image: radial-gradient(
@@ -253,6 +264,7 @@ body {
     rgba(16, 157, 114, 0.04),
     transparent 46%
   );
+  animation: wash-emerald-breathe 20s ease-in-out -6s infinite;
 }
 .wash-violet {
   background-image: radial-gradient(
@@ -260,6 +272,7 @@ body {
     rgba(109, 40, 217, 0.036),
     transparent 46%
   );
+  animation: wash-violet-breathe 23s ease-in-out -11s infinite;
 }
 .wash-coral {
   background-image: radial-gradient(
@@ -267,6 +280,41 @@ body {
     rgba(239, 86, 72, 0.036),
     transparent 46%
   );
+  animation: wash-coral-breathe 19s ease-in-out -3s infinite;
+}
+@keyframes wash-indigo-breathe {
+  0%, 100% { background-image: radial-gradient(100% 66% at 30% 50%, rgba(67, 64, 189, 0.03), transparent 46%); }
+  50% { background-image: radial-gradient(100% 66% at 30% 50%, rgba(67, 64, 189, 0.058), transparent 46%); }
+}
+@keyframes wash-gold-breathe {
+  0%, 100% { background-image: radial-gradient(100% 66% at 70% 50%, rgba(217, 143, 31, 0.032), transparent 46%); }
+  50% { background-image: radial-gradient(100% 66% at 70% 50%, rgba(217, 143, 31, 0.06), transparent 46%); }
+}
+@keyframes wash-cyan-breathe {
+  0%, 100% { background-image: radial-gradient(100% 66% at 25% 50%, rgba(9, 149, 198, 0.03), transparent 46%); }
+  50% { background-image: radial-gradient(100% 66% at 25% 50%, rgba(9, 149, 198, 0.056), transparent 46%); }
+}
+@keyframes wash-emerald-breathe {
+  0%, 100% { background-image: radial-gradient(100% 66% at 75% 50%, rgba(16, 157, 114, 0.03), transparent 46%); }
+  50% { background-image: radial-gradient(100% 66% at 75% 50%, rgba(16, 157, 114, 0.056), transparent 46%); }
+}
+@keyframes wash-violet-breathe {
+  0%, 100% { background-image: radial-gradient(100% 66% at 50% 50%, rgba(109, 40, 217, 0.026), transparent 46%); }
+  50% { background-image: radial-gradient(100% 66% at 50% 50%, rgba(109, 40, 217, 0.052), transparent 46%); }
+}
+@keyframes wash-coral-breathe {
+  0%, 100% { background-image: radial-gradient(100% 66% at 35% 50%, rgba(239, 86, 72, 0.026), transparent 46%); }
+  50% { background-image: radial-gradient(100% 66% at 35% 50%, rgba(239, 86, 72, 0.052), transparent 46%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wash-indigo,
+  .wash-gold,
+  .wash-cyan,
+  .wash-emerald,
+  .wash-violet,
+  .wash-coral {
+    animation: none;
+  }
 }
 
 /* ---- site footer: grounded, premium terminal band ----
@@ -394,18 +442,27 @@ body {
     );
 }
 
-/* ---- aurora field: slow, blurred, drifting color clouds ----
+/* ---- aurora field: a living, layered jewel-light mesh ----
    Jewel light drifting behind the hero on the cool porcelain canvas —
    indigo and violet leading, studio teal and electric cyan cooling the low
-   corners, one warm magenta pool for contrast. Blurred wide and dialed
-   back so the porcelain stays luminous, not muddy. */
+   corners, one warm magenta pool for contrast. Blurred wide and dialed back
+   so the porcelain stays luminous, not muddy.
+
+   Depth is built from THREE stacked planes that move in counterpoint, so the
+   field reads as real drifting weather rather than one panning image:
+     .aurora          — the primary jewel pools, slow drift + gentle breathe
+     .aurora::before  — a larger, slower counter-drifting undertone for depth
+     .aurora::after   — a fine conic specular sheen that slowly revolves,
+                        catching the light like the surface of the glass
+   A whole-field hue rotation runs underneath all three, so the colors living-
+   ly refract over minutes instead of sitting fixed. */
 .aurora {
   position: absolute;
   inset: -25%;
   z-index: 0;
   pointer-events: none;
-  filter: blur(76px) saturate(150%);
-  opacity: 0.5;
+  filter: blur(74px) saturate(155%);
+  opacity: 0.52;
   background:
     radial-gradient(
       32% 42% at 22% 26%,
@@ -432,7 +489,58 @@ body {
       rgba(124, 58, 237, 0.16),
       transparent 60%
     );
-  animation: aurora-drift 24s ease-in-out infinite alternate;
+  will-change: transform, filter;
+  animation:
+    aurora-drift 26s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate,
+    aurora-hue 60s linear infinite;
+}
+/* undertone plane — wider, deeper pools drifting the opposite way, so the
+   field gains parallax and never reads as a single flat sheet of color */
+.aurora::before {
+  content: "";
+  position: absolute;
+  inset: -12%;
+  border-radius: inherit;
+  filter: blur(96px) saturate(140%);
+  opacity: 0.85;
+  background:
+    radial-gradient(
+      44% 52% at 78% 40%,
+      rgba(99, 102, 241, 0.22),
+      transparent 64%
+    ),
+    radial-gradient(
+      40% 48% at 18% 60%,
+      rgba(192, 38, 211, 0.16),
+      transparent 62%
+    ),
+    radial-gradient(
+      46% 50% at 52% 92%,
+      rgba(20, 184, 166, 0.16),
+      transparent 64%
+    );
+  animation: aurora-undertow 34s cubic-bezier(0.45, 0, 0.55, 1) infinite
+    alternate;
+}
+/* specular plane — a slowly revolving conic sheen, held to a whisper, that
+   makes the light feel like it is catching a curved glass surface */
+.aurora::after {
+  content: "";
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  opacity: 0.4;
+  filter: blur(58px);
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    rgba(124, 58, 237, 0.14) 70deg,
+    transparent 150deg,
+    rgba(14, 127, 184, 0.12) 240deg,
+    transparent 320deg
+  );
+  animation: aurora-revolve 48s linear infinite;
 }
 @keyframes aurora-drift {
   0% {
@@ -442,7 +550,42 @@ body {
     transform: translate3d(2.5%, -2%, 0) scale(1.1) rotate(2deg);
   }
   100% {
-    transform: translate3d(-2%, 1.5%, 0) scale(1.05) rotate(-1.5deg);
+    transform: translate3d(-2%, 1.5%, 0) scale(1.06) rotate(-1.5deg);
+  }
+}
+@keyframes aurora-undertow {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1.04) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(-3%, 2.5%, 0) scale(1.12) rotate(-2.5deg);
+  }
+  100% {
+    transform: translate3d(2%, -1.5%, 0) scale(1.08) rotate(1.5deg);
+  }
+}
+@keyframes aurora-revolve {
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* slow whole-field refraction — the palette breathes through a narrow hue arc
+   so the color is never static, but never swings far enough to leave the
+   brand's indigo→violet→teal register */
+@keyframes aurora-hue {
+  0%,
+  100% {
+    filter: blur(74px) saturate(155%) hue-rotate(-8deg);
+  }
+  50% {
+    filter: blur(74px) saturate(165%) hue-rotate(10deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aurora,
+  .aurora::before,
+  .aurora::after {
+    animation: none;
   }
 }
 
@@ -464,24 +607,34 @@ body {
    Emphasized words refract from electric indigo through violet into rose
    magenta — a cool-led jewel sweep against the ink. */
 .accent-word {
+  position: relative;
   font-style: italic;
+  /* a brighter specular band (near-white at 50%) is folded into the jewel
+     sweep so a highlight travels through the letters as the gradient pans —
+     the word reads as lit glass catching light, not a flat gradient fill */
   background: linear-gradient(
     115deg,
     #4f46e5,
-    #7c3aed 28%,
-    #c026d3 50%,
-    #d9367f 66%,
-    #7c3aed 84%,
+    #7c3aed 22%,
+    #c026d3 40%,
+    #f0e6ff 50%,
+    #d9367f 60%,
+    #7c3aed 80%,
     #4f46e5
   );
-  background-size: 220% 100%;
+  background-size: 260% 100%;
   background-position: 0% 50%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   /* the jewel slowly refracts — a whisper of movement across every emphasized
-     word on the page, so the type feels lit rather than printed */
-  animation: accent-shimmer 9s ease-in-out infinite;
+     word on the page, so the type feels lit rather than printed. A colored
+     drop-shadow halo breathes in the same rhythm so the word reads as backlit
+     glass. drop-shadow works on the gradient-clipped glyphs regardless of how
+     the word is split into per-character spans. */
+  animation:
+    accent-shimmer 9s cubic-bezier(0.45, 0, 0.55, 1) infinite,
+    accent-glow 9s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 @keyframes accent-shimmer {
   0%,
@@ -490,6 +643,20 @@ body {
   }
   50% {
     background-position: 100% 50%;
+  }
+}
+@keyframes accent-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px rgba(124, 58, 237, 0.12));
+  }
+  50% {
+    filter: drop-shadow(0 1px 22px rgba(192, 38, 211, 0.3));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .accent-word {
+    animation: none;
   }
 }
 
@@ -502,23 +669,40 @@ body {
   background-image: linear-gradient(
     135deg,
     #4f46e5,
-    #7c3aed 35%,
-    #c026d3 65%,
+    #7c3aed 30%,
+    #c026d3 55%,
+    #d9367f 72%,
     #4f46e5
   );
-  background-size: 200% 100%;
+  background-size: 220% 100%;
   background-position: 0% 50%;
   box-shadow: 0 10px 30px -12px var(--app-cta-glow);
   transition: box-shadow 0.5s ease, background-position 0.6s ease;
+  /* the prism is never fully still — it drifts slowly at rest so the CTA
+     reads as lit even before the cursor arrives, then accelerates on hover */
+  animation: cta-idle 9s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
 }
 .glow-copper:hover {
   box-shadow: 0 16px 44px -12px var(--app-cta-glow-hover);
   /* the prism travels across the button on hover — a live sweep of light */
   animation: cta-pan 2.6s linear infinite;
 }
+@keyframes cta-idle {
+  0% {
+    background-position: 12% 50%;
+  }
+  100% {
+    background-position: 60% 50%;
+  }
+}
 @keyframes cta-pan {
   to {
-    background-position: 200% 50%;
+    background-position: 220% 50%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glow-copper {
+    animation: none;
   }
 }
 

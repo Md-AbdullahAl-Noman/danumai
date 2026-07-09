@@ -26,35 +26,38 @@ export default function CharReveal({
   const words = text.split(" ");
 
   return (
-    <Tag className={className} aria-label={text}>
+    <Tag className={`text-balance ${className ?? ""}`} aria-label={text}>
       {words.map((word, wi) => {
         const accent = accentWords.includes(word.replace(/[.,?]/g, ""));
         return (
-          <motion.span
-            key={wi}
-            aria-hidden
-            className={`inline-block will-change-[transform,filter] ${
-              accent ? "accent-word" : ""
-            }`}
-            initial={
-              reduce
-                ? { opacity: 0 }
-                : { opacity: 0, y: "0.42em", filter: "blur(10px)" }
-            }
-            animate={
-              reduce
-                ? { opacity: 1 }
-                : { opacity: 1, y: "0em", filter: "blur(0px)" }
-            }
-            transition={{
-              duration: 1.05,
-              delay: delay + wi * 0.055,
-              ease: EASE,
-            }}
-          >
-            {word}
-            {wi < words.length - 1 ? " " : ""}
-          </motion.span>
+          // Space rendered as a separate node between words so it stays a real
+          // break opportunity — words wrap cleanly instead of overflowing.
+          <span key={wi}>
+            <motion.span
+              aria-hidden
+              className={`inline-block will-change-[transform,filter] ${
+                accent ? "accent-word" : ""
+              }`}
+              initial={
+                reduce
+                  ? { opacity: 0 }
+                  : { opacity: 0, y: "0.42em", filter: "blur(10px)" }
+              }
+              animate={
+                reduce
+                  ? { opacity: 1 }
+                  : { opacity: 1, y: "0em", filter: "blur(0px)" }
+              }
+              transition={{
+                duration: 1.05,
+                delay: delay + wi * 0.055,
+                ease: EASE,
+              }}
+            >
+              {word}
+            </motion.span>
+            {wi < words.length - 1 ? " " : ""}
+          </span>
         );
       })}
     </Tag>

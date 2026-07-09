@@ -20,31 +20,36 @@ export default function WordReveal({
   const words = text.split(" ");
 
   return (
-    <Tag className={className} aria-label={text}>
+    <Tag className={`text-balance ${className ?? ""}`} aria-label={text}>
       {words.map((word, i) => (
-        <span
-          key={`${word}-${i}`}
-          aria-hidden
-          className="inline-block overflow-hidden pb-[0.12em] -mb-[0.12em] align-top"
-        >
-          <motion.span
-            className={`inline-block ${
-              accentWords.includes(word.replace(/[.,]/g, ""))
-                ? "accent-word"
-                : ""
-            }`}
-            initial={reduce ? { opacity: 0 } : { y: "110%", rotate: 2.5 }}
-            whileInView={reduce ? { opacity: 1 } : { y: "0%", rotate: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{
-              duration: 0.85,
-              delay: delay + i * 0.06,
-              ease: [0.22, 1, 0.36, 1],
-            }}
+        // Plain inline wrapper: the trailing space lives inside it, after the
+        // masked word, so it renders as a real, breakable space between words.
+        // Long accent words then wrap to the next line instead of overflowing
+        // the viewport on narrow screens.
+        <span key={`${word}-${i}`}>
+          <span
+            aria-hidden
+            className="inline-block overflow-hidden pb-[0.12em] mb-[-0.12em] align-top"
           >
-            {word}
-          </motion.span>
-          {i < words.length - 1 ? " " : ""}
+            <motion.span
+              className={`inline-block ${
+                accentWords.includes(word.replace(/[.,]/g, ""))
+                  ? "accent-word"
+                  : ""
+              }`}
+              initial={reduce ? { opacity: 0 } : { y: "110%", rotate: 2.5 }}
+              whileInView={reduce ? { opacity: 1 } : { y: "0%", rotate: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{
+                duration: 0.85,
+                delay: delay + i * 0.06,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              {word}
+            </motion.span>
+          </span>
+          {i < words.length - 1 ? " " : ""}
         </span>
       ))}
     </Tag>

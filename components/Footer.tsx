@@ -15,7 +15,7 @@ export default function Footer() {
         Danumai
       </span>
       <Reveal y={24} className="relative mx-auto max-w-6xl px-6 py-24 md:px-10">
-        <div className="grid gap-14 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="grid grid-cols-1 gap-14 sm:grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <Link
               href="/"

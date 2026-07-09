@@ -111,7 +111,7 @@ export default function VentureShowcase() {
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div
           aria-hidden
-          className="wash-indigo sticky left-0 top-0 h-screen w-full [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)]"
+          className="wash-indigo sticky left-0 top-0 h-svh w-full [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)]"
         />
       </div>
 
@@ -124,7 +124,7 @@ export default function VentureShowcase() {
         style={{ height: `${TRACK_UNITS * 100}vh` }}
         className="relative"
       >
-        <div className="isolate sticky top-0 flex h-screen flex-col justify-center gap-12 overflow-hidden py-24 md:gap-16 md:py-32">
+        <div className="isolate sticky top-0 flex h-svh flex-col justify-center gap-8 overflow-hidden py-16 md:gap-16 md:py-32">
           <div className="mx-auto w-full max-w-6xl px-6 md:px-10">{header}</div>
           <div className="mx-auto w-full max-w-6xl px-6 md:px-10">
             <div className="relative h-108 sm:h-120 md:h-[min(30rem,72svh)]">
@@ -280,23 +280,25 @@ function VentureCard({ v }: { v: (typeof ventures)[number] }) {
       {/* Art */}
       <div className="relative z-10 h-32 overflow-hidden rounded-2xl border hairline bg-ink-3 sm:h-44 md:h-full md:max-h-80">
         <v.Art />
-        <span
-          className="absolute right-3 top-3 rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.15em] backdrop-blur-sm"
-          style={{
-            borderColor: `${v.accent}40`,
-            color: v.accent,
-            background: "rgba(12,11,9,0.6)",
-          }}
-        >
-          {v.status}
-        </span>
       </div>
 
       {/* Copy */}
       <div className="relative z-10 flex flex-col justify-center">
-        <span className="font-display text-xs" style={{ color: accent }}>
-          {v.index}
-        </span>
+        <div className="flex items-center justify-between gap-3">
+          <span className="font-display text-xs" style={{ color: accent }}>
+            {v.index}
+          </span>
+          <span
+            className="rounded-full border px-2.5 py-0.5 text-[10px] uppercase tracking-[0.15em] backdrop-blur-sm"
+            style={{
+              borderColor: `${accent}40`,
+              color: accent,
+              background: `${accent}12`,
+            }}
+          >
+            {v.status}
+          </span>
+        </div>
         <h3 className="mt-1.5 font-display text-xl tracking-tight text-paper sm:text-2xl md:mt-2 md:text-[1.75rem]">
           {v.name}
         </h3>

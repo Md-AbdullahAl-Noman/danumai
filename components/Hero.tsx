@@ -46,7 +46,7 @@ export default function Hero() {
   return (
     <section
       onMouseMove={onMouseMove}
-      className="relative flex min-h-screen flex-col justify-center overflow-hidden"
+      className="relative flex min-h-svh flex-col justify-center overflow-hidden"
     >
       {/* Aurora + grid substrate */}
       <div aria-hidden className="aurora" />
