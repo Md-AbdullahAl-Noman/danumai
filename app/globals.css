@@ -609,6 +609,12 @@ body {
 .accent-word {
   position: relative;
   font-style: italic;
+  /* italic glyphs lean right and their side-bearing overshoots the
+     inline-block box, so background-clip:text clips the final stroke. A
+     little right padding gives the overhang room; the matching negative
+     margin keeps word spacing unchanged. */
+  padding-right: 0.08em;
+  margin-right: -0.08em;
   /* a brighter specular band (near-white at 50%) is folded into the jewel
      sweep so a highlight travels through the letters as the gradient pans —
      the word reads as lit glass catching light, not a flat gradient fill */
