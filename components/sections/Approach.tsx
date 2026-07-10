@@ -1,6 +1,13 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import Reveal from "@/components/ui/Reveal";
 import WordReveal from "@/components/ui/WordReveal";
@@ -101,57 +108,90 @@ export default function Approach() {
 
             <ol ref={listRef} className="space-y-0">
               {principles.map((p, i) => (
-                <li
+                <PrincipleNode
                   key={p.n}
-                  ref={i === principles.length - 1 ? lastNodeRef : undefined}
-                  className="relative pl-12"
-                >
-                  <motion.span
-                    aria-hidden
-                    initial={reduce ? { opacity: 0 } : { scale: 0 }}
-                    whileInView={reduce ? { opacity: 1 } : { scale: 1 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 300,
-                      damping: 20,
-                      delay: 0.15,
-                    }}
-                    className="absolute left-0 top-[0.4em] block h-[15px] w-[15px] rounded-full border border-copper/60 bg-ink-2"
-                  >
-                    <span className="absolute inset-[4px] rounded-full bg-copper" />
-                  </motion.span>
-                  <motion.div
-                    initial={
-                      reduce ? { opacity: 0 } : { opacity: 0, x: 32 }
-                    }
-                    whileInView={
-                      reduce ? { opacity: 1 } : { opacity: 1, x: 0 }
-                    }
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{
-                      duration: 0.9,
-                      delay: 0.1,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    className={i === principles.length - 1 ? "" : "pb-14"}
-                  >
-                    <span className="font-display text-sm text-copper">
-                      {p.n}
-                    </span>
-                    <h3 className="mt-2 font-display text-xl tracking-tight text-paper md:text-2xl">
-                      {p.title}
-                    </h3>
-                    <p className="mt-3 max-w-lg text-sm leading-relaxed text-mist">
-                      {p.body}
-                    </p>
-                  </motion.div>
-                </li>
+                  p={p}
+                  i={i}
+                  n={principles.length}
+                  progress={lineScale}
+                  reduce={!!reduce}
+                  liRef={
+                    i === principles.length - 1 ? lastNodeRef : undefined
+                  }
+                />
               ))}
             </ol>
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+/* A single timeline entry that lights as the spine reaches it. The spine's
+   growth (`progress`, 0→1 across the list) is compared against this node's
+   fractional position, so the dot fills + haloes and the copy resolves from
+   dim exactly as the copper line arrives — a reading spotlight moving down the
+   principles rather than four independent pop-ins. */
+function PrincipleNode({
+  p,
+  i,
+  n,
+  progress,
+  reduce,
+  liRef,
+}: {
+  p: { n: string; title: string; body: string };
+  i: number;
+  n: number;
+  progress: MotionValue<number>;
+  reduce: boolean;
+  liRef?: React.Ref<HTMLLIElement>;
+}) {
+  const isLast = i === n - 1;
+  // Where this node sits along the spine, 0..1.
+  const at = n > 1 ? i / (n - 1) : 0;
+  // Smooth 0→1 as the spine crosses this node.
+  const lit = useTransform(
+    progress,
+    [Math.max(0, at - 0.06), Math.min(1, at + 0.02)],
+    [0, 1],
+  );
+  const dotScale = useTransform(lit, [0, 1], [0.5, 1]);
+  const haloOpacity = useTransform(lit, [0, 1], [0, 0.5]);
+  const copyOpacity = useTransform(lit, [0, 1], [0.42, 1]);
+  const copyX = useTransform(lit, [0, 1], [14, 0]);
+
+  return (
+    <li ref={liRef} className="relative pl-12">
+      {/* dot: fills + haloes as the spine arrives */}
+      <span
+        aria-hidden
+        className="absolute left-0 top-[0.4em] block h-[15px] w-[15px] rounded-full border border-copper/60 bg-ink-2"
+      >
+        <motion.span
+          style={reduce ? undefined : { opacity: haloOpacity }}
+          className="absolute -inset-2 rounded-full bg-copper/30 blur-sm"
+        />
+        <motion.span
+          style={reduce ? undefined : { scale: dotScale }}
+          className="absolute inset-[4px] rounded-full bg-copper"
+        />
+      </span>
+      <motion.div
+        style={
+          reduce ? undefined : { opacity: copyOpacity, x: copyX }
+        }
+        className={isLast ? "" : "pb-14"}
+      >
+        <span className="font-display text-sm text-copper">{p.n}</span>
+        <h3 className="mt-2 font-display text-xl tracking-tight text-paper md:text-2xl">
+          {p.title}
+        </h3>
+        <p className="mt-3 max-w-lg text-sm leading-relaxed text-mist">
+          {p.body}
+        </p>
+      </motion.div>
+    </li>
   );
 }

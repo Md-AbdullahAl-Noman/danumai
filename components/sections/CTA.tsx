@@ -21,7 +21,7 @@ export default function CTA() {
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <MagneticButton
               href="/careers"
-              className="glow-copper sheen group inline-flex items-center gap-2 rounded-full bg-copper px-7 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-copper-soft"
+              className="glow-copper sheen beam beam-always group inline-flex items-center gap-2 rounded-full bg-copper px-7 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-copper-soft"
             >
               See open roles
               <span

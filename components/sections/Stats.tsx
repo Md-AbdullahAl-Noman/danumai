@@ -18,20 +18,35 @@ export default function Stats() {
           {stats.map((s, i) => (
             <Reveal key={s.label} delay={i * 0.1} className="h-full">
               <SpotlightCard
-                className="card card-hover card-topline h-full p-4 sm:p-6 md:p-7"
-                style={{ "--card-accent": s.accent } as CSSProperties}
+                className="card card-hover card-topline beam h-full p-4 sm:p-6 md:p-7"
+                style={
+                  {
+                    "--card-accent": s.accent,
+                    "--beam-color": s.accent,
+                    "--beam-color-2": `${s.accent}00`,
+                    "--ghost": s.accent,
+                  } as CSSProperties
+                }
               >
+                {/* oversized ghost figure — typographic depth keyed to accent */}
                 <span
                   aria-hidden
-                  className="mb-3 block text-[11px] font-medium tracking-[0.2em] sm:mb-6 sm:text-xs"
+                  className="ghost-numeral pointer-events-none absolute -bottom-4 -right-1 z-0 text-[6.5rem] sm:text-[8rem] md:text-[9rem]"
+                >
+                  {s.value}
+                  {s.suffix}
+                </span>
+                <span
+                  aria-hidden
+                  className="relative mb-3 block text-[11px] font-medium tracking-[0.2em] sm:mb-6 sm:text-xs"
                   style={{ color: s.accent }}
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <dd className="font-display text-3xl tracking-tight text-paper sm:text-5xl md:text-6xl">
+                <dd className="relative font-display text-3xl tracking-tight text-paper sm:text-5xl md:text-6xl">
                   <CountUp value={s.value} suffix={s.suffix} />
                 </dd>
-                <dt className="mt-2 text-xs leading-relaxed text-mist sm:mt-3 sm:text-sm">
+                <dt className="relative mt-2 text-xs leading-relaxed text-mist sm:mt-3 sm:text-sm">
                   {s.label}
                 </dt>
               </SpotlightCard>

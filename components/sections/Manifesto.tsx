@@ -1,6 +1,24 @@
 import LineReveal from "@/components/ui/LineReveal";
 import Reveal from "@/components/ui/Reveal";
 
+const principles = [
+  {
+    title: "Conceived",
+    body: "Our own idea, not a client brief — every venture starts as a bet we chose to make.",
+    accent: "#4f46e5",
+  },
+  {
+    title: "Built",
+    body: "Engineered in-house by Danumai Labs, on one shared platform we control end to end.",
+    accent: "#c026d3",
+  },
+  {
+    title: "Operated",
+    body: "Run by us for the long haul — no borrowed vision, no exit-and-forget.",
+    accent: "#d97706",
+  },
+];
+
 export default function Manifesto() {
   return (
     <section className="wash-violet relative overflow-hidden border-t section-edge">
@@ -52,6 +70,32 @@ export default function Manifesto() {
             still run ourselves — no client briefs, no borrowed vision.
           </p>
         </Reveal>
+
+        <dl className="mx-auto mt-12 grid max-w-3xl grid-cols-1 gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline text-left sm:grid-cols-3">
+          {principles.map((p, i) => (
+            <Reveal
+              key={p.title}
+              delay={0.65 + i * 0.1}
+              className="h-full bg-ink"
+            >
+              <div className="flex h-full flex-col p-6 md:p-7">
+                <span
+                  aria-hidden
+                  className="text-[11px] font-medium tracking-[0.2em]"
+                  style={{ color: p.accent }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <dt className="mt-4 text-xs uppercase tracking-[0.22em] text-paper">
+                  {p.title}
+                </dt>
+                <dd className="mt-2 text-sm leading-relaxed text-mist">
+                  {p.body}
+                </dd>
+              </div>
+            </Reveal>
+          ))}
+        </dl>
       </div>
     </section>
   );

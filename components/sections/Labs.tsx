@@ -139,13 +139,19 @@ export default function Labs() {
 
             {/* Right — live viewport */}
             <div
-              style={{
-                borderColor: `${accent}33`,
-                background: `radial-gradient(120% 90% at 100% 0%, ${accent}18, transparent 55%), var(--color-surface)`,
-                boxShadow: `0 44px 110px -46px var(--app-venture-drop), 0 0 0 1px ${accent}1a inset`,
-                transition: "border-color 0.6s ease, background 0.6s ease",
-              }}
-              className="relative flex min-h-105 flex-col overflow-hidden rounded-3xl border p-4 sm:p-5 md:p-6"
+              style={
+                {
+                  borderColor: `${accent}33`,
+                  background: `radial-gradient(120% 90% at 100% 0%, ${accent}18, transparent 55%), var(--color-surface)`,
+                  boxShadow: `0 44px 110px -46px var(--app-venture-drop), 0 0 0 1px ${accent}1a inset`,
+                  transition: "border-color 0.6s ease, background 0.6s ease",
+                  "--beam-color": accent,
+                  "--beam-color-2": `${accent}00`,
+                  "--beam-width": "1.5px",
+                  "--beam-speed": "6s",
+                } as React.CSSProperties
+              }
+              className="beam beam-always relative flex min-h-105 flex-col overflow-hidden rounded-3xl border p-4 sm:p-5 md:p-6"
             >
               {/* chrome bar */}
               <div className="mb-4 flex items-center gap-2">

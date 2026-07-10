@@ -25,6 +25,7 @@ const PILL_TRANSITION = {
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [bubble, setBubble] = useState<Bubble>({
     left: 0,
@@ -37,8 +38,22 @@ export default function Nav() {
   const hoveringRef = useRef(false);
   const pathname = usePathname();
 
+  // Chrome that gets out of the way: past a threshold the bar retracts when
+  // you scroll down (reading) and springs back the instant you scroll up
+  // (reaching for navigation). Near the very top it always stays put.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 24);
+      const delta = y - lastY;
+      if (y < 80) {
+        setHidden(false);
+      } else if (Math.abs(delta) > 6) {
+        setHidden(delta > 0);
+      }
+      lastY = y;
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -112,8 +127,11 @@ export default function Nav() {
   return (
     <motion.header
       initial={{ y: -24, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      animate={{
+        y: hidden && !menuOpen ? '-100%' : 0,
+        opacity: 1,
+      }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed inset-x-0 top-0 z-110 transition-colors duration-500 ${
         scrolled || menuOpen
           ? 'border-b hairline bg-ink/80 backdrop-blur-md'

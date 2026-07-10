@@ -2,6 +2,7 @@
 
 import {
   motion,
+  useMotionTemplate,
   useMotionValue,
   useReducedMotion,
   useScroll,
@@ -30,11 +31,24 @@ export default function Hero() {
   const lightY = useTransform(smy, (v) => v * 40);
   const textX = useTransform(smx, (v) => v * -8);
   const textY = useTransform(smy, (v) => v * -5);
+  // A second, stronger parallax plane — the supporting copy + CTAs sit
+  // "closer" than the headline, so a small cursor move separates the layers
+  // into real depth instead of one flat card sliding.
+  const nearX = useTransform(smx, (v) => v * -18);
+  const nearY = useTransform(smy, (v) => v * -11);
 
-  // Scroll-driven exit: hero content drifts up and dims as you leave it.
+  // Scroll-driven exit: the hero doesn't just fade — it recedes. Content
+  // drifts up, scales down a hair, and softly defocuses, so leaving the hero
+  // reads as a cinematic pull-back handing the stage to the next act. The
+  // light field pushes the opposite way and dims, deepening the parallax.
   const { scrollY } = useScroll();
   const exitY = useTransform(scrollY, [0, 700], [0, -90]);
-  const exitOpacity = useTransform(scrollY, [0, 600], [1, 0.25]);
+  const exitScale = useTransform(scrollY, [0, 700], [1, 0.955]);
+  const exitOpacity = useTransform(scrollY, [0, 600], [1, 0.2]);
+  const exitBlurPx = useTransform(scrollY, [0, 700], [0, 7]);
+  const exitFilter = useMotionTemplate`blur(${exitBlurPx}px)`;
+  const fieldY = useTransform(scrollY, [0, 700], [0, 120]);
+  const fieldScale = useTransform(scrollY, [0, 700], [1, 1.15]);
 
   const onMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (reduce) return;
@@ -52,12 +66,23 @@ export default function Hero() {
       <div aria-hidden className="aurora" />
       <div aria-hidden className="absolute inset-0 bg-grid" />
 
-      {/* Ambient light field — follows the cursor, breathes on its own */}
+      {/* Ambient light field — follows the cursor, breathes on its own, and
+          drifts down + swells as the page scrolls so it parallaxes against the
+          receding copy. */}
       <motion.div
         aria-hidden
-        style={reduce ? undefined : { x: lightX, y: lightY }}
+        style={
+          reduce
+            ? undefined
+            : { x: lightX, y: fieldY, scale: fieldScale }
+        }
         className="absolute inset-0"
       >
+        <motion.div
+          aria-hidden
+          className="absolute inset-0"
+          style={reduce ? undefined : { y: lightY }}
+        >
         <motion.div
           className="absolute right-[-10%] top-[-15%] h-[70vh] w-[70vw] rounded-full"
           style={{
@@ -74,13 +99,25 @@ export default function Hero() {
           animate={reduce ? undefined : { scale: [1, 1.12, 1] }}
           transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 2 }}
         />
+        </motion.div>
       </motion.div>
 
       <motion.div
         style={reduce ? undefined : { x: textX, y: textY }}
         className="relative mx-auto w-full max-w-6xl px-6 pt-28 pb-16 md:px-10"
       >
-        <motion.div style={{ y: exitY, opacity: exitOpacity }}>
+        <motion.div
+          style={
+            reduce
+              ? { opacity: exitOpacity }
+              : {
+                  y: exitY,
+                  scale: exitScale,
+                  opacity: exitOpacity,
+                  filter: exitFilter,
+                }
+          }
+        >
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
@@ -100,9 +137,12 @@ export default function Hero() {
             text="A house of ventures, built and operated under one roof."
             accentWords={["ventures", "one", "roof"]}
             delay={0.35}
-            className="mt-6 max-w-4xl font-display text-4xl leading-[1.08] tracking-tight text-paper sm:text-6xl md:text-7xl"
+            className="text-hero mt-6 max-w-4xl font-display tracking-tight text-paper"
           />
 
+          {/* Near plane: the copy + CTAs share a stronger cursor parallax than
+              the headline, so they float a step forward of it. */}
+          <motion.div style={reduce ? undefined : { x: nearX, y: nearY }}>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -123,7 +163,7 @@ export default function Hero() {
             <MagneticButton
               href="#ventures"
               strength={0.15}
-              className="glow-copper sheen group inline-flex items-center gap-2 rounded-full bg-copper px-6 py-3 text-sm font-medium text-ink transition-[background-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-copper-soft"
+              className="glow-copper sheen beam beam-always group inline-flex items-center gap-2 rounded-full bg-copper px-6 py-3 text-sm font-medium text-ink transition-[background-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-copper-soft"
             >
               Explore the ventures
               <span
@@ -141,6 +181,7 @@ export default function Hero() {
             >
               How we work
             </MagneticButton>
+          </motion.div>
           </motion.div>
         </motion.div>
       </motion.div>

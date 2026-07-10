@@ -2,6 +2,7 @@ import SmoothScroll from "@/components/providers/SmoothScroll";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import ScrollProgress from "@/components/ScrollProgress";
+import ScrollToTop from "@/components/ui/ScrollToTop";
 import Cursor from "@/components/ui/Cursor";
 
 /**
@@ -19,6 +20,7 @@ export default function SiteLayout({
     <SmoothScroll>
       <Cursor />
       <ScrollProgress />
+      <ScrollToTop />
       <Nav />
       <main className="flex-1">{children}</main>
       <Footer />

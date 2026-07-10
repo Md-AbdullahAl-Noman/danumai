@@ -175,6 +175,21 @@ export default function VentureShowcase({ projects }: { projects?: Project[] }) 
                 />
               ))}
             </div>
+
+            {/* Deck progress — one pill per venture, the active one stretching
+                and lighting to its own accent as its card takes the front. */}
+            <div className="mt-8 flex items-center justify-center gap-2.5">
+              {ventures.map((v, i) => (
+                <DeckDot
+                  key={v.name}
+                  i={i}
+                  n={N}
+                  accent={v.accent}
+                  trackUnits={trackUnits}
+                  progress={scrollYProgress}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -248,6 +263,43 @@ function DeckCard({
   );
 }
 
+/* ---------- deck progress dot ----------
+   "Frontness" of card i is how far it has arrived minus how far the next card
+   has arrived — a smooth 0..1 that peaks when card i owns the front of the
+   deck. The pill widens and lights to the venture's accent at its peak. */
+function DeckDot({
+  i,
+  n,
+  accent,
+  trackUnits,
+  progress,
+}: {
+  i: number;
+  n: number;
+  accent: string;
+  trackUnits: number;
+  progress: MotionValue<number>;
+}) {
+  const frontness = useTransform(progress, (p) => {
+    const here = arrival(p, i, trackUnits);
+    const next = i + 1 < n ? arrival(p, i + 1, trackUnits) : 0;
+    return clamp01(here - next);
+  });
+  const width = useTransform(frontness, [0, 1], [8, 30]);
+  const opacity = useTransform(frontness, [0, 1], [0.3, 1]);
+  const bg = useTransform(frontness, (f) =>
+    f > 0.5 ? accent : "currentColor",
+  );
+
+  return (
+    <motion.span
+      aria-hidden
+      style={{ width, opacity, backgroundColor: bg }}
+      className="h-2 rounded-full text-mist"
+    />
+  );
+}
+
 /* ---------- the venture card itself ---------- */
 function VentureCard({ v }: { v: Venture }) {
   const accent = v.accent;
@@ -302,8 +354,13 @@ function VentureCard({ v }: { v: Venture }) {
         borderColor: cardBorder,
         background: cardBg,
         boxShadow: `0 44px 110px -42px var(--app-venture-drop), 0 1px 0 0 var(--app-card-inset) inset, 0 0 0 1px ${cardRing} inset`,
-      }}
-      className="group relative grid h-full grid-cols-1 gap-4 overflow-hidden rounded-3xl border p-4 sm:gap-6 sm:p-5 md:grid-cols-2 md:gap-8 md:p-6"
+        // beam ring inherits this venture's own accent, so the lit edge that
+        // sweeps the card on hover is coloured to the card, not the brand default
+        "--beam-color": accent,
+        "--beam-color-2": `${accent}00`,
+        "--beam-width": "1.5px",
+      } as CSSProperties}
+      className="beam group relative grid h-full grid-cols-1 gap-4 overflow-hidden rounded-3xl border p-4 sm:gap-6 sm:p-5 md:grid-cols-2 md:gap-8 md:p-6"
     >
       {/* accent spotlight that trails the cursor */}
       <span

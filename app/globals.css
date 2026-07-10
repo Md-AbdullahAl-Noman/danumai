@@ -879,6 +879,137 @@ body {
   }
 }
 
+/* ---- fluid display type ----
+   The hero headline is the single loudest typographic moment on the page, so
+   it sizes off the viewport instead of fixed breakpoints — it scales
+   continuously from phone to wide desktop, and the tightened tracking + optical
+   line-height keep it feeling set, not merely large. */
+.text-hero {
+  font-size: clamp(2.5rem, 1.2rem + 6vw, 5.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.022em;
+}
+.text-hero-sub {
+  font-size: clamp(1.75rem, 1rem + 3vw, 3.25rem);
+  line-height: 1.06;
+  letter-spacing: -0.018em;
+}
+
+/* ---- animated conic border beam ----
+   A signature "lit edge" for primary surfaces: a single bright arc of the
+   brand prism sweeps continuously around the border of an element. Built the
+   modern way — a conic gradient painted into a 1px ring via mask compositing,
+   with the sweep angle animated through a registered @property so the browser
+   can interpolate the angle on the compositor (impossible with a plain
+   background-position hack). Defaults to hover-reveal; add `.beam-always` for a
+   permanent halo. Colour + speed are themable per element via custom props. */
+@property --beam-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.beam {
+  position: relative;
+}
+.beam::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  padding: var(--beam-width, 1px);
+  background: conic-gradient(
+    from var(--beam-angle) at 50% 50%,
+    transparent 0deg,
+    var(--beam-color, #7c3aed) 24deg,
+    var(--beam-color-2, #d9367f) 44deg,
+    transparent 96deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  animation: beam-spin var(--beam-speed, 4.5s) linear infinite;
+  pointer-events: none;
+}
+.beam:hover::after,
+.beam-always::after,
+.group:hover > .beam::after {
+  opacity: 1;
+}
+@keyframes beam-spin {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .beam::after {
+    animation: none;
+  }
+}
+
+/* ---- second marquee lane, reversed ----
+   Pairs with .marquee to form two counter-drifting rows; the offset speeds and
+   opposing directions read as depth rather than one sliding strip. */
+.marquee-rev {
+  animation: marquee-rev 44s linear infinite;
+}
+.marquee-rev:hover,
+.marquee:hover ~ .marquee-rev,
+.group:hover .marquee,
+.group:hover .marquee-rev {
+  animation-play-state: paused;
+}
+@keyframes marquee-rev {
+  from {
+    transform: translateX(-33.333%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* ---- gentle idle float for decorative chips ---- */
+.float {
+  animation: float-bob 7s ease-in-out infinite;
+}
+@keyframes float-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .float,
+  .marquee-rev {
+    animation: none;
+  }
+}
+
+/* ---- oversized ghost numeral ----
+   A giant, barely-there display figure sitting behind a stat — pure typographic
+   depth, keyed to the tile's accent so a grid of stats reads as a set of lit
+   plates rather than flat boxes. */
+.ghost-numeral {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 600;
+  line-height: 0.72;
+  letter-spacing: -0.04em;
+  color: color-mix(in srgb, var(--ghost, var(--color-paper)) 8%, transparent);
+  user-select: none;
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
