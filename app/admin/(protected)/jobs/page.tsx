@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { listJobs } from "@/lib/data/jobs";
-import { deleteJobAction } from "./actions";
+import JobsList from "./JobsList";
 
 export default async function AdminJobsPage() {
   const jobs = await listJobs();
@@ -13,6 +13,9 @@ export default async function AdminJobsPage() {
           <h1 className="mt-2 font-display text-3xl tracking-tight text-paper">
             Open roles
           </h1>
+          <p className="mt-2 text-sm text-mist">
+            Reorder with the arrows, publish/unpublish, or quick-edit inline.
+          </p>
         </div>
         <Link
           href="/admin/jobs/new"
@@ -22,45 +25,7 @@ export default async function AdminJobsPage() {
         </Link>
       </div>
 
-      {jobs.length === 0 ? (
-        <p className="text-sm text-mist">No jobs yet.</p>
-      ) : (
-        <ul className="divide-y hairline border-y hairline">
-          {jobs.map((j) => (
-            <li key={j.id} className="flex items-center gap-4 py-4">
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-display text-lg text-paper">
-                  {j.title}
-                  {!j.published && (
-                    <span className="ml-2 rounded-full border hairline px-2 py-0.5 text-[10px] uppercase tracking-[0.1em] text-faint">
-                      Draft
-                    </span>
-                  )}
-                </p>
-                <p className="truncate text-xs text-faint">
-                  {j.team} · {j.location} · {j.type}
-                </p>
-              </div>
-              <Link
-                href={`/admin/jobs/${j.id}/edit`}
-                className="text-sm text-copper hover:text-copper-soft"
-              >
-                Edit
-              </Link>
-              <form
-                action={async () => {
-                  "use server";
-                  await deleteJobAction(j.id);
-                }}
-              >
-                <button type="submit" className="text-sm text-red-400 hover:text-red-300">
-                  Delete
-                </button>
-              </form>
-            </li>
-          ))}
-        </ul>
-      )}
+      <JobsList jobs={jobs} />
     </div>
   );
 }

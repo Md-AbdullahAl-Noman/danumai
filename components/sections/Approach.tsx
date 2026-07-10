@@ -11,31 +11,14 @@ import {
 import { useEffect, useRef, useState } from "react";
 import Reveal from "@/components/ui/Reveal";
 import WordReveal from "@/components/ui/WordReveal";
+import { DEFAULT_CONTENT, type ApproachContent } from "@/lib/content";
 
-const principles = [
-  {
-    n: "01",
-    title: "We build for ourselves",
-    body: "No client work, no agencies, no retainers. Every product we ship is one we own and operate — which means we live with every decision we make.",
-  },
-  {
-    n: "02",
-    title: "We operate what we build",
-    body: "Shipping is the start, not the finish. The same team that engineers a product runs it in the market, so feedback loops are measured in days, not quarters.",
-  },
-  {
-    n: "03",
-    title: "One roof, shared engine",
-    body: "Streaming, stories, and care technology look unrelated until you see the machinery underneath — shared infrastructure, shared design language, shared conviction.",
-  },
-  {
-    n: "04",
-    title: "Patience over hype",
-    body: "We pick markets we understand deeply and commit for years. Compounding beats momentum, in products as in everything else.",
-  },
-];
-
-export default function Approach() {
+export default function Approach({
+  content = DEFAULT_CONTENT.approach,
+}: {
+  content?: ApproachContent;
+}) {
+  const principles = content.principles;
   const listRef = useRef<HTMLOListElement>(null);
   const lastNodeRef = useRef<HTMLLIElement>(null);
   const reduce = useReducedMotion();
@@ -78,12 +61,12 @@ export default function Approach() {
           <div className="md:sticky md:top-28 md:self-start">
             <Reveal>
               <p className="text-xs uppercase tracking-[0.3em] text-copper">
-                Approach
+                {content.eyebrow}
               </p>
             </Reveal>
             <WordReveal
-              text="The way we choose to work."
-              accentWords={["choose"]}
+              text={content.heading}
+              accentWords={content.accentWords}
               className="mt-5 font-display text-3xl tracking-tight text-paper md:text-4xl"
             />
           </div>

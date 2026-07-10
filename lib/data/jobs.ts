@@ -1,4 +1,5 @@
 import { query } from "@/lib/db";
+import { reorderSwap } from "./reorder";
 
 export type Job = {
   id: string;
@@ -112,4 +113,27 @@ export async function updateJob(id: string, input: JobInput): Promise<Job> {
 
 export async function deleteJob(id: string): Promise<void> {
   await query(`DELETE FROM jobs WHERE id = $1`, [id]);
+}
+
+export async function setJobPublished(id: string, published: boolean): Promise<void> {
+  await query(
+    `UPDATE jobs SET published = $2, updated_at = now() WHERE id = $1`,
+    [id, published]
+  );
+}
+
+/** Quick inline edit of the fields shown on the list row. */
+export async function quickUpdateJob(
+  id: string,
+  fields: { title: string; team: string; sortOrder: number }
+): Promise<void> {
+  await query(
+    `UPDATE jobs SET title = $2, team = $3, sort_order = $4, updated_at = now() WHERE id = $1`,
+    [id, fields.title, fields.team, fields.sortOrder]
+  );
+}
+
+export async function moveJob(id: string, direction: "up" | "down"): Promise<void> {
+  const all = await listJobs();
+  await reorderSwap("jobs", all, id, direction);
 }

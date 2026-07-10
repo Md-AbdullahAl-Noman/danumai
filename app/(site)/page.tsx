@@ -7,27 +7,35 @@ import Labs from "@/components/sections/Labs";
 import Manifesto from "@/components/sections/Manifesto";
 import CTA from "@/components/sections/CTA";
 import { listProjects } from "@/lib/data/projects";
+import { getSiteContent } from "@/lib/data/content";
+import { DEFAULT_CONTENT } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  // Falls back to VentureShowcase's built-in defaults if the database isn't
-  // reachable (e.g. DATABASE_URL not configured yet), so the site still renders.
-  const projects = await listProjects().catch((err) => {
-    console.error("Failed to load projects", err);
-    return undefined;
-  });
+  // Both fall back to built-in defaults if the database isn't reachable (e.g.
+  // DATABASE_URL not configured yet), so the site still renders end to end.
+  const [projects, content] = await Promise.all([
+    listProjects({ publishedOnly: true }).catch((err) => {
+      console.error("Failed to load projects", err);
+      return undefined;
+    }),
+    getSiteContent().catch((err) => {
+      console.error("Failed to load site content", err);
+      return DEFAULT_CONTENT;
+    }),
+  ]);
 
   return (
     <>
-      <Hero />
-      <Ticker />
-      <VentureShowcase projects={projects} />
-      <Stats />
-      <Approach />
-      <Labs />
-      <Manifesto />
-      <CTA />
+      <Hero content={content.hero} />
+      <Ticker content={content.ticker} />
+      <VentureShowcase projects={projects} header={content.ventures} />
+      <Stats content={content.stats} />
+      <Approach content={content.approach} />
+      <Labs content={content.labs} />
+      <Manifesto content={content.manifesto} />
+      <CTA content={content.cta} />
     </>
   );
 }

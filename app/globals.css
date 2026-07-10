@@ -397,6 +397,76 @@ body {
   transform-origin: left;
 }
 
+/* ---- footer rich links, icons & CTA ---- */
+
+/* nav rows: icon + label, both warm up together on hover */
+.footer-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.footer-nav-link:hover,
+.footer-nav-link:focus-visible {
+  color: var(--color-paper);
+}
+
+/* leading arrow used by venture rows: hidden-ish, then slides in on hover */
+.footer-arrow {
+  flex: none;
+  color: var(--color-copper);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.footer-nav-link:hover .footer-arrow,
+.footer-nav-link:focus-visible .footer-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* contact rows use a persistent framed icon that lifts to copper on hover */
+.footer-ico {
+  display: inline-flex;
+  flex: none;
+  color: var(--color-faint);
+  transition:
+    color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.footer-nav-link:hover .footer-ico,
+.footer-nav-link:focus-visible .footer-ico {
+  color: var(--color-copper);
+  transform: translateY(-1px);
+}
+
+/* social chips */
+.social-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  color: var(--color-mist);
+  border: 1px solid var(--color-hairline);
+  background: color-mix(in srgb, var(--color-paper) 3%, transparent);
+  transition:
+    color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.social-chip:hover,
+.social-chip:focus-visible {
+  color: var(--color-paper);
+  border-color: color-mix(in srgb, var(--color-copper) 50%, transparent);
+  background: color-mix(in srgb, var(--color-copper) 12%, transparent);
+  box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--color-copper) 60%, transparent);
+}
+
 /* ---- focus ring ---- */
 :focus-visible {
   outline: 2px solid var(--app-focus-ring);
@@ -804,6 +874,59 @@ body {
 .card-hover:hover.card-topline::before,
 .card-topline.card-hover:hover::before {
   opacity: 1;
+}
+
+/* ---- frosted glass card ----
+   A softer, calmer alternative to the solid .card: a translucent, blurred
+   pane that frosts whatever sits behind it (the section's breathing wash + the
+   grid), so the tile reads as a sheet of lit glass floating on the canvas
+   rather than an opaque plate. Keeps the same per-accent tint contract
+   (--card-accent) and pairs with .card-hover / .card-topline / .beam. The
+   backdrop-blur is the whole point, so the surface stays deliberately
+   see-through; a bright top sheen + inset highlight give it the wet-glass
+   edge. */
+.card-glass {
+  --card-accent: var(--color-surface);
+  position: relative;
+  border-radius: 1.25rem;
+  /* Bright frosted PANEL — deliberately more opaque than a see-through pane,
+     because the porcelain canvas has nothing to refract, so pure glass would
+     vanish into it. The card sits clearly brighter than the canvas (a frosted
+     near-white tinted a whisper toward its accent); the backdrop-blur still
+     softly refracts the section wash + grid through the translucent parts, so
+     it reads as lit glass rather than a flat plate — but it never disappears. */
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 0.62) 60%
+    ),
+    color-mix(in srgb, var(--card-accent) 14%, rgba(249, 251, 254, 0.86));
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  backdrop-filter: blur(16px) saturate(150%);
+  /* crisp cool-ink hairline so the edge is legible on the light canvas — a
+     white border here would be invisible */
+  border: 1px solid
+    color-mix(in srgb, var(--card-accent) 30%, var(--color-hairline-strong));
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.95) inset,
+    0 1px 2px rgba(23, 25, 38, 0.06),
+    0 12px 26px -12px color-mix(in srgb, var(--card-accent) 30%, rgba(23, 25, 38, 0.16)),
+    0 30px 56px -28px color-mix(in srgb, var(--card-accent) 26%, rgba(23, 25, 38, 0.2));
+  transition:
+    border-color 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.6s ease;
+}
+.card-hover.card-glass:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--card-accent) 55%, var(--color-hairline-strong));
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 1) inset,
+    0 2px 4px rgba(23, 25, 38, 0.07),
+    0 18px 38px -14px color-mix(in srgb, var(--card-accent) 40%, rgba(23, 25, 38, 0.2)),
+    0 44px 78px -32px color-mix(in srgb, var(--card-accent) 34%, rgba(23, 25, 38, 0.24));
 }
 
 /* ---- card cursor glow (uses --mx / --my set from JS) ---- */

@@ -75,6 +75,16 @@ export default function ProjectForm({
         </label>
       </div>
 
+      <label className="flex items-center gap-2.5 text-sm text-mist">
+        <input
+          type="checkbox"
+          name="published"
+          defaultChecked={project?.published ?? true}
+          className="accent-copper"
+        />
+        Published (visible on the homepage)
+      </label>
+
       <label className="block text-sm">
         <span className="text-xs uppercase tracking-[0.15em] text-faint">
           Features (one per line)

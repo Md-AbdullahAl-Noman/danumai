@@ -1,33 +1,98 @@
 import Link from "next/link";
 import { listProjects } from "@/lib/data/projects";
 import { listJobs } from "@/lib/data/jobs";
+import { SECTIONS } from "@/lib/content";
 
 export default async function AdminDashboard() {
   const [projects, jobs] = await Promise.all([listProjects(), listJobs()]);
 
+  const publishedProjects = projects.filter((p) => p.published).length;
+  const publishedJobs = jobs.filter((j) => j.published).length;
+
+  const stats = [
+    {
+      label: "Projects",
+      href: "/admin/projects",
+      total: projects.length,
+      sub: `${publishedProjects} shown · ${projects.length - publishedProjects} hidden`,
+      blurb: "Ventures shown on the homepage.",
+    },
+    {
+      label: "Jobs",
+      href: "/admin/jobs",
+      total: jobs.length,
+      sub: `${publishedJobs} published · ${jobs.length - publishedJobs} draft`,
+      blurb: "Open roles on the careers page.",
+    },
+    {
+      label: "Content sections",
+      href: "/admin/content",
+      total: SECTIONS.length,
+      sub: "Homepage & footer copy",
+      blurb: "Edit every section of the public site.",
+    },
+  ];
+
   return (
-    <div className="space-y-8">
-      <div>
-        <p className="text-xs uppercase tracking-[0.3em] text-copper">Overview</p>
-        <h1 className="mt-2 font-display text-3xl tracking-tight text-paper">
-          Dashboard
-        </h1>
+    <div className="space-y-10">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-xs uppercase tracking-[0.3em] text-copper">Overview</p>
+          <h1 className="mt-2 font-display text-3xl tracking-tight text-paper">
+            Dashboard
+          </h1>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/admin/projects/new"
+            className="rounded-full bg-copper px-4 py-2 text-sm font-medium text-ink hover:bg-copper-soft"
+          >
+            + New project
+          </Link>
+          <Link
+            href="/admin/jobs/new"
+            className="rounded-full border hairline px-4 py-2 text-sm text-paper hover:border-copper/40 hover:text-copper-soft"
+          >
+            + New job
+          </Link>
+          <Link
+            href="/"
+            target="_blank"
+            className="rounded-full border hairline px-4 py-2 text-sm text-paper hover:border-copper/40 hover:text-copper-soft"
+          >
+            View site ↗
+          </Link>
+        </div>
       </div>
-      <div className="grid gap-6 sm:grid-cols-2">
-        <Link href="/admin/projects" className="card card-hover p-6">
-          <p className="text-xs uppercase tracking-[0.2em] text-faint">Projects</p>
-          <p className="mt-2 font-display text-3xl text-paper">{projects.length}</p>
-          <p className="mt-3 text-sm text-mist">
-            Manage ventures shown on the homepage.
-          </p>
-        </Link>
-        <Link href="/admin/jobs" className="card card-hover p-6">
-          <p className="text-xs uppercase tracking-[0.2em] text-faint">Jobs</p>
-          <p className="mt-2 font-display text-3xl text-paper">{jobs.length}</p>
-          <p className="mt-3 text-sm text-mist">
-            Manage open roles shown on the careers page.
-          </p>
-        </Link>
+
+      <div className="grid gap-6 sm:grid-cols-3">
+        {stats.map((s) => (
+          <Link key={s.label} href={s.href} className="card card-hover p-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-faint">{s.label}</p>
+            <p className="mt-2 font-display text-4xl text-paper">{s.total}</p>
+            <p className="mt-2 text-xs text-copper">{s.sub}</p>
+            <p className="mt-3 text-sm text-mist">{s.blurb}</p>
+          </Link>
+        ))}
+      </div>
+
+      <div>
+        <h2 className="font-display text-lg text-paper">Edit site content</h2>
+        <p className="mt-1 text-sm text-mist">
+          Jump straight to any section of the public homepage or footer.
+        </p>
+        <ul className="mt-4 flex flex-wrap gap-2">
+          {SECTIONS.map((s) => (
+            <li key={s.key}>
+              <Link
+                href={`/admin/content/${s.key}`}
+                className="inline-block rounded-full border hairline px-4 py-2 text-sm text-mist transition-colors hover:border-copper/40 hover:text-copper-soft"
+              >
+                {s.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

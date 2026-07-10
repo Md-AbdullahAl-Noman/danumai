@@ -15,6 +15,7 @@ import Reveal from "@/components/ui/Reveal";
 import WordReveal from "@/components/ui/WordReveal";
 import { CareArt, ImageArt, ReelsArt, StudiosArt } from "./showcase/artworks";
 import type { Project } from "@/lib/data/projects";
+import { DEFAULT_CONTENT, type VenturesHeaderContent } from "@/lib/content";
 
 type Venture = {
   index: string;
@@ -86,7 +87,13 @@ function toVentures(projects: Project[]): Venture[] {
   }));
 }
 
-export default function VentureShowcase({ projects }: { projects?: Project[] }) {
+export default function VentureShowcase({
+  projects,
+  header = DEFAULT_CONTENT.ventures,
+}: {
+  projects?: Project[];
+  header?: VenturesHeaderContent;
+}) {
   const ventures = projects && projects.length > 0 ? toVentures(projects) : defaultVentures;
   const N = ventures.length;
   const trackUnits = (N - 1) * CHUNK; // e.g. 2.1 → 210vh for 3 cards
@@ -100,20 +107,19 @@ export default function VentureShowcase({ projects }: { projects?: Project[] }) 
     offset: ["start start", "end end"],
   });
 
-  const header = (
+  const headerEl = (
     <div>
       <Reveal>
-        <p className="text-xs uppercase tracking-[0.3em] text-copper">Ventures</p>
+        <p className="text-xs uppercase tracking-[0.3em] text-copper">{header.eyebrow}</p>
       </Reveal>
       <WordReveal
-        text="Three bets, one conviction."
-        accentWords={["bets", "conviction"]}
+        text={header.heading}
+        accentWords={header.accentWords}
         className="mt-4 max-w-2xl font-display text-3xl tracking-tight text-paper md:text-5xl"
       />
       <Reveal delay={0.25}>
         <p className="mt-4 max-w-xl text-sm leading-relaxed text-mist sm:text-base">
-          Each venture stands on the same in-house platform — and each one is a
-          product we run ourselves.
+          {header.intro}
         </p>
       </Reveal>
     </div>
@@ -124,7 +130,7 @@ export default function VentureShowcase({ projects }: { projects?: Project[] }) 
     return (
       <section id="ventures" className="wash-indigo scroll-mt-24">
         <div className="mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
-          {header}
+          {headerEl}
           <div className="mt-20 flex flex-col gap-8">
             {ventures.map((v) => (
               <VentureCard key={v.name} v={v} />
@@ -161,7 +167,7 @@ export default function VentureShowcase({ projects }: { projects?: Project[] }) 
         className="relative"
       >
         <div className="isolate sticky top-0 flex h-svh flex-col justify-center gap-8 overflow-hidden py-16 md:gap-16 md:py-32">
-          <div className="mx-auto w-full max-w-6xl px-6 md:px-10">{header}</div>
+          <div className="mx-auto w-full max-w-6xl px-6 md:px-10">{headerEl}</div>
           <div className="mx-auto w-full max-w-6xl px-6 md:px-10">
             <div className="relative h-108 sm:h-120 md:h-[min(30rem,72svh)]">
               {ventures.map((v, i) => (

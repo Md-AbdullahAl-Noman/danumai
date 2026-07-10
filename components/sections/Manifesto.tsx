@@ -1,25 +1,14 @@
 import LineReveal from "@/components/ui/LineReveal";
+import PrincipleCards from "@/components/ui/PrincipleCards";
 import Reveal from "@/components/ui/Reveal";
+import { DEFAULT_CONTENT, type ManifestoContent } from "@/lib/content";
 
-const principles = [
-  {
-    title: "Conceived",
-    body: "Our own idea, not a client brief — every venture starts as a bet we chose to make.",
-    accent: "#4f46e5",
-  },
-  {
-    title: "Built",
-    body: "Engineered in-house by Danumai Labs, on one shared platform we control end to end.",
-    accent: "#c026d3",
-  },
-  {
-    title: "Operated",
-    body: "Run by us for the long haul — no borrowed vision, no exit-and-forget.",
-    accent: "#d97706",
-  },
-];
-
-export default function Manifesto() {
+export default function Manifesto({
+  content = DEFAULT_CONTENT.manifesto,
+}: {
+  content?: ManifestoContent;
+}) {
+  const principles = content.cards;
   return (
     <section className="wash-violet relative overflow-hidden border-t section-edge">
       <div
@@ -30,7 +19,7 @@ export default function Manifesto() {
             "radial-gradient(50% 60% at 50% 100%, var(--app-ambient-glow), transparent 70%)",
         }}
       />
-      <div className="relative mx-auto max-w-4xl px-6 py-16 text-center md:px-10 md:py-20">
+      <div className="relative mx-auto max-w-4xl px-6 pt-8 pb-16 text-center md:px-10 md:pt-10 md:pb-20">
         <Reveal y={0}>
           <span
             aria-hidden
@@ -40,14 +29,9 @@ export default function Manifesto() {
           </span>
         </Reveal>
         <blockquote className="mt-4 font-display text-2xl leading-snug tracking-tight text-paper sm:text-4xl md:text-[2.75rem]">
+          <LineReveal lines={content.quoteLines} />
           <LineReveal
-            lines={[
-              "Most companies rent their future",
-              "from someone else's roadmap.",
-            ]}
-          />
-          <LineReveal
-            lines={["We decided to own ours."]}
+            lines={content.resolveLines}
             delay={0.24}
             lineClassName="accent-word"
           />
@@ -63,39 +47,16 @@ export default function Manifesto() {
 
         <Reveal delay={0.55}>
           <p className="mt-5 text-xs uppercase tracking-[0.25em] text-faint">
-            The Danumai principle
+            {content.principleEyebrow}
           </p>
           <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-mist">
-            Every product under this roof is one we conceived, built, and
-            still run ourselves — no client briefs, no borrowed vision.
+            {content.principleBody}
           </p>
         </Reveal>
 
-        <dl className="mx-auto mt-12 grid max-w-3xl grid-cols-1 gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline text-left sm:grid-cols-3">
-          {principles.map((p, i) => (
-            <Reveal
-              key={p.title}
-              delay={0.65 + i * 0.1}
-              className="h-full bg-ink"
-            >
-              <div className="flex h-full flex-col p-6 md:p-7">
-                <span
-                  aria-hidden
-                  className="text-[11px] font-medium tracking-[0.2em]"
-                  style={{ color: p.accent }}
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <dt className="mt-4 text-xs uppercase tracking-[0.22em] text-paper">
-                  {p.title}
-                </dt>
-                <dd className="mt-2 text-sm leading-relaxed text-mist">
-                  {p.body}
-                </dd>
-              </div>
-            </Reveal>
-          ))}
-        </dl>
+        <div className="mx-auto max-w-3xl">
+          <PrincipleCards principles={principles} />
+        </div>
       </div>
     </section>
   );

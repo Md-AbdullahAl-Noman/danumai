@@ -11,6 +11,7 @@ import {
 } from "framer-motion";
 import CharReveal from "@/components/ui/CharReveal";
 import MagneticButton from "@/components/ui/MagneticButton";
+import { DEFAULT_CONTENT, type HeroContent } from "@/lib/content";
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -19,7 +20,7 @@ const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const ORB_A = "rgba(217,143,31,0.20)";
 const ORB_B = "rgba(217,54,127,0.14)";
 
-export default function Hero() {
+export default function Hero({ content = DEFAULT_CONTENT.hero }: { content?: HeroContent }) {
   const reduce = useReducedMotion();
 
   // Mouse-driven ambient parallax (springed so it settles, never snaps).
@@ -129,13 +130,13 @@ export default function Hero() {
               <span className="relative inline-flex h-2 w-2 rounded-full bg-copper" />
             </span>
             <span className="text-[11px] uppercase tracking-[0.25em] text-mist">
-              Danumai Inc. — building in 2026
+              {content.badge}
             </span>
           </motion.div>
 
           <CharReveal
-            text="A house of ventures, built and operated under one roof."
-            accentWords={["ventures", "one", "roof"]}
+            text={content.headline}
+            accentWords={content.accentWords}
             delay={0.35}
             className="text-hero mt-6 max-w-4xl font-display tracking-tight text-paper"
           />
@@ -149,9 +150,7 @@ export default function Hero() {
             transition={{ duration: 0.9, delay: 1.35, ease: EASE }}
             className="mt-8 max-w-xl text-base leading-relaxed text-mist md:text-lg"
           >
-            We don&rsquo;t build for clients. We build streaming, stories, and
-            care technology for ourselves — engineered in-house by Danumai
-            Labs, and run for the long haul.
+            {content.subcopy}
           </motion.p>
 
           <motion.div
@@ -161,11 +160,11 @@ export default function Hero() {
             className="relative z-10 mt-10 flex flex-wrap items-center gap-3"
           >
             <MagneticButton
-              href="#ventures"
+              href={content.primaryHref}
               strength={0.15}
               className="glow-copper sheen beam beam-always group inline-flex items-center gap-2 rounded-full bg-copper px-6 py-3 text-sm font-medium text-ink transition-[background-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-copper-soft"
             >
-              Explore the ventures
+              {content.primaryLabel}
               <span
                 aria-hidden
                 className="inline-block transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1"
@@ -175,11 +174,11 @@ export default function Hero() {
             </MagneticButton>
 
             <MagneticButton
-              href="#approach"
+              href={content.secondaryHref}
               strength={0.12}
               className="group relative z-10 inline-flex items-center gap-2 rounded-full border border-hairline bg-ink px-6 py-3 text-sm font-medium text-mist backdrop-blur-sm transition-[color,background-color,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-paper/20 hover:bg-ink-2 hover:text-paper"
             >
-              How we work
+              {content.secondaryLabel}
             </MagneticButton>
           </motion.div>
           </motion.div>

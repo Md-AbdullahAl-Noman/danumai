@@ -10,6 +10,7 @@ import {
   PlatformExhibit,
   ProductExhibit,
 } from "./labs/exhibits";
+import { DEFAULT_CONTENT, type LabsContent, type LabsCapability } from "@/lib/content";
 
 type Capability = {
   n: string;
@@ -21,45 +22,37 @@ type Capability = {
   Exhibit: ComponentType<{ accent: string }>;
 };
 
-const capabilities: readonly Capability[] = [
-  {
-    n: "01",
-    title: "Product engineering",
-    body: "Full-stack, owned end to end — from the first line of code to what ships in production.",
-    tags: ["Web", "Mobile", "Backend"],
-    accent: "#d97706", // warm amber
-    Exhibit: ProductExhibit,
-  },
-  {
-    n: "02",
-    title: "Shared platform",
-    body: "Auth, payments, media, and analytics — built once, hardened continuously, reused by every venture.",
-    tags: ["Auth", "Payments", "Media"],
-    accent: "#e0402f", // signal coral
-    Exhibit: PlatformExhibit,
-  },
-  {
-    n: "03",
-    title: "Design system",
-    body: "One visual language and component library spanning every Danumai product.",
-    tags: ["Tokens", "Components", "Motion"],
-    accent: "#0d9488", // studio teal
-    Exhibit: DesignSystemExhibit,
-  },
-  {
-    n: "04",
-    title: "Applied AI",
-    body: "Deployed where it earns its keep in the product experience — and nowhere else.",
-    tags: ["Recsys", "Tooling", "Search"],
-    accent: "#4f46e5", // electric indigo
-    Exhibit: AppliedAIExhibit,
-  },
-] as const;
+// The bespoke visual exhibits are code, not content — each capability is paired
+// with one by its position in the list, so editors can retitle/reorder the
+// capabilities while the art follows along.
+const EXHIBITS: ComponentType<{ accent: string }>[] = [
+  ProductExhibit,
+  PlatformExhibit,
+  DesignSystemExhibit,
+  AppliedAIExhibit,
+];
+
+function toCapabilities(items: LabsCapability[]): Capability[] {
+  return items.map((c, i) => ({
+    n: c.n,
+    title: c.title,
+    body: c.body,
+    tags: c.tags,
+    accent: c.accent,
+    Exhibit: EXHIBITS[i % EXHIBITS.length],
+  }));
+}
 
 const CYCLE_MS = 5200;
 const ease = [0.16, 1, 0.3, 1] as const;
 
-export default function Labs() {
+export default function Labs({
+  content = DEFAULT_CONTENT.labs,
+}: {
+  content?: LabsContent;
+}) {
+  const capabilities = toCapabilities(content.capabilities);
+  const count = capabilities.length;
   const reduce = useReducedMotion();
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -73,42 +66,41 @@ export default function Labs() {
   useEffect(() => {
     if (reduce || paused) return;
     timer.current = setTimeout(
-      () => setActive((a) => (a + 1) % capabilities.length),
+      () => setActive((a) => (a + 1) % count),
       CYCLE_MS,
     );
     return clear;
-  }, [active, paused, reduce, clear]);
+  }, [active, paused, reduce, clear, count]);
 
   const select = (i: number) => {
     clear();
     setActive(i);
   };
 
-  const current = capabilities[active];
+  if (count === 0) return null;
+  const current = capabilities[Math.min(active, count - 1)];
   const accent = current.accent;
 
   return (
     <section id="labs" className="wash-emerald scroll-mt-24 border-t section-edge">
-      <div className="mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
+      <div className="mx-auto max-w-6xl px-6 pt-24 pb-12 md:px-10 md:pt-32 md:pb-14">
         {/* Header */}
         <div className="flex flex-wrap items-end justify-between gap-8">
           <div>
             <Reveal>
               <p className="text-xs uppercase tracking-[0.3em] text-copper">
-                Danumai Labs
+                {content.eyebrow}
               </p>
             </Reveal>
             <WordReveal
-              text="The engineering room behind every venture."
-              accentWords={["engineering", "room"]}
+              text={content.heading}
+              accentWords={content.accentWords}
               className="mt-5 max-w-2xl font-display text-3xl tracking-tight text-paper md:text-5xl"
             />
           </div>
           <Reveal delay={0.25}>
             <p className="max-w-xs text-sm leading-relaxed text-mist">
-              Not a department — the whole company&rsquo;s build capability.
-              Product, design, and engineering shipping from one shared
-              codebase.
+              {content.intro}
             </p>
           </Reveal>
         </div>

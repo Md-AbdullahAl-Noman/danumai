@@ -6,6 +6,9 @@ import {
   createProject,
   updateProject,
   deleteProject,
+  setProjectPublished,
+  quickUpdateProject,
+  moveProject,
   type ProjectInput,
 } from "@/lib/data/projects";
 import { uploadImage, deleteImage } from "@/lib/storage";
@@ -32,6 +35,7 @@ async function readInput(formData: FormData, existingImageUrl: string | null): P
   const status = String(formData.get("status") ?? "").trim();
   const accent = String(formData.get("accent") ?? "#d99a4e").trim();
   const sortOrder = Number(formData.get("sortOrder") ?? 0) || 0;
+  const published = formData.get("published") === "on";
   const features = parseFeatures(String(formData.get("features") ?? ""));
 
   if (!name) throw new Error("Name is required.");
@@ -55,6 +59,7 @@ async function readInput(formData: FormData, existingImageUrl: string | null): P
     features,
     accent,
     imageUrl,
+    published,
     sortOrder,
   };
 }
@@ -99,6 +104,35 @@ export async function deleteProjectAction(id: string, imageUrl: string | null) {
   await requireAdmin();
   await deleteProject(id);
   if (imageUrl) await deleteImage(imageUrl);
+  revalidatePath("/admin/projects");
+  revalidatePath("/");
+}
+
+export async function toggleProjectPublishedAction(id: string, published: boolean) {
+  await requireAdmin();
+  await setProjectPublished(id, published);
+  revalidatePath("/admin/projects");
+  revalidatePath("/");
+}
+
+export async function moveProjectAction(id: string, direction: "up" | "down") {
+  await requireAdmin();
+  await moveProject(id, direction);
+  revalidatePath("/admin/projects");
+  revalidatePath("/");
+}
+
+export async function quickUpdateProjectAction(
+  id: string,
+  fields: { name: string; status: string; sortOrder: number }
+) {
+  await requireAdmin();
+  if (!fields.name.trim()) throw new Error("Name is required.");
+  await quickUpdateProject(id, {
+    name: fields.name.trim(),
+    status: fields.status.trim(),
+    sortOrder: Number(fields.sortOrder) || 0,
+  });
   revalidatePath("/admin/projects");
   revalidatePath("/");
 }

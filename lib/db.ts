@@ -53,6 +53,21 @@ async function initSchema() {
       created_at timestamptz NOT NULL DEFAULT now(),
       updated_at timestamptz NOT NULL DEFAULT now()
     );
+
+    -- Editable marketing copy for the public site. One row per homepage/footer
+    -- section, keyed by section name; the value is a JSON blob whose shape is
+    -- defined per-section in lib/content.ts. Missing rows fall back to the
+    -- built-in defaults, so the site always renders even before anything is
+    -- edited from the admin panel.
+    CREATE TABLE IF NOT EXISTS site_content (
+      key text PRIMARY KEY,
+      value jsonb NOT NULL DEFAULT '{}',
+      updated_at timestamptz NOT NULL DEFAULT now()
+    );
+
+    -- Projects gained a published flag after the initial release; add it in a
+    -- backwards-compatible way so existing databases pick it up on next boot.
+    ALTER TABLE projects ADD COLUMN IF NOT EXISTS published boolean NOT NULL DEFAULT true;
   `);
 }
 

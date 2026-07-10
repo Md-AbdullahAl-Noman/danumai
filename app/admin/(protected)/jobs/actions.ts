@@ -2,7 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createJob, updateJob, deleteJob, type JobInput } from "@/lib/data/jobs";
+import {
+  createJob,
+  updateJob,
+  deleteJob,
+  setJobPublished,
+  quickUpdateJob,
+  moveJob,
+  type JobInput,
+} from "@/lib/data/jobs";
 import { slugify } from "@/lib/slugify";
 import { requireAdmin } from "@/lib/auth";
 
@@ -80,6 +88,35 @@ export async function updateJobAction(
 export async function deleteJobAction(id: string) {
   await requireAdmin();
   await deleteJob(id);
+  revalidatePath("/admin/jobs");
+  revalidatePath("/careers");
+}
+
+export async function toggleJobPublishedAction(id: string, published: boolean) {
+  await requireAdmin();
+  await setJobPublished(id, published);
+  revalidatePath("/admin/jobs");
+  revalidatePath("/careers");
+}
+
+export async function moveJobAction(id: string, direction: "up" | "down") {
+  await requireAdmin();
+  await moveJob(id, direction);
+  revalidatePath("/admin/jobs");
+  revalidatePath("/careers");
+}
+
+export async function quickUpdateJobAction(
+  id: string,
+  fields: { title: string; team: string; sortOrder: number }
+) {
+  await requireAdmin();
+  if (!fields.title.trim()) throw new Error("Title is required.");
+  await quickUpdateJob(id, {
+    title: fields.title.trim(),
+    team: fields.team.trim(),
+    sortOrder: Number(fields.sortOrder) || 0,
+  });
   revalidatePath("/admin/jobs");
   revalidatePath("/careers");
 }

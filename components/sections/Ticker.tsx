@@ -1,18 +1,4 @@
-const items = [
-  "BanglaReels",
-  "Danumai Studios",
-  "Care Technology",
-  "Danumai Labs",
-];
-
-// A short manifesto lane rides beneath the venture lane, drifting the opposite
-// way. Two counter-moving rows read as depth rather than one sliding strip.
-const phrases = [
-  "Built for ourselves",
-  "Operated for the long haul",
-  "One roof, one engine",
-  "No clients, by design",
-];
+import { DEFAULT_CONTENT, type TickerContent } from "@/lib/content";
 
 function Lane({
   words,
@@ -42,14 +28,18 @@ function Lane({
 
 /** Two slow counter-drifting lanes separating the hero from the ventures grid.
  *  Hovering the band pauses both lanes together. */
-export default function Ticker() {
+export default function Ticker({
+  content = DEFAULT_CONTENT.ticker,
+}: {
+  content?: TickerContent;
+}) {
   return (
     <div
       aria-hidden
       className="group relative flex flex-col gap-3 overflow-hidden border-y section-edge py-5 [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
     >
-      <Lane words={items} className="text-faint" />
-      <Lane words={phrases} reverse className="text-faint/60" />
+      <Lane words={content.ventures} className="text-faint" />
+      <Lane words={content.phrases} reverse className="text-faint/60" />
     </div>
   );
 }
