@@ -137,8 +137,7 @@ export default function ContactForm() {
         </p>
       )}
       <p className="text-xs leading-relaxed text-faint">
-        Sends straight to hello@danumai.com — nothing is stored on this
-        site.
+        Goes straight to hello@danumai.com so we can write back.
       </p>
     </form>
   );

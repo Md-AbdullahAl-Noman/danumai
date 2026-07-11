@@ -1,6 +1,7 @@
 "use server";
 
 import { resend } from "@/lib/resend";
+import { createContactMessage } from "@/lib/data/submissions";
 
 export type ContactState = {
   status: "success" | "error";
@@ -17,6 +18,14 @@ export async function sendContactMessage(
 
   if (!name || !email || !message) {
     return { status: "error", message: "Please fill in every field." };
+  }
+
+  // Persist first so the message is recorded in the admin panel even if the
+  // notification email later fails to send.
+  try {
+    await createContactMessage({ name, email, topic, message });
+  } catch (err) {
+    console.error("createContactMessage failed", err);
   }
 
   try {

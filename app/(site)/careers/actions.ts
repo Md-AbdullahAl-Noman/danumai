@@ -1,6 +1,7 @@
 "use server";
 
 import { resend } from "@/lib/resend";
+import { createApplication } from "@/lib/data/submissions";
 
 export type ApplyState = {
   status: "success" | "error";
@@ -18,6 +19,14 @@ export async function sendApplication(
 
   if (!name || !email || !note) {
     return { status: "error", message: "Please fill in every field." };
+  }
+
+  // Persist first so the application is recorded in the admin panel even if the
+  // notification email later fails to send.
+  try {
+    await createApplication({ jobTitle, name, email, portfolio, note });
+  } catch (err) {
+    console.error("createApplication failed", err);
   }
 
   try {

@@ -1,13 +1,23 @@
 import Link from "next/link";
 import { listProjects } from "@/lib/data/projects";
 import { listJobs } from "@/lib/data/jobs";
+import { listApplications, listContactMessages } from "@/lib/data/submissions";
 import { SECTIONS } from "@/lib/content";
 
 export default async function AdminDashboard() {
-  const [projects, jobs] = await Promise.all([listProjects(), listJobs()]);
+  const [projects, jobs, applications, messages] = await Promise.all([
+    listProjects(),
+    listJobs(),
+    listApplications(),
+    listContactMessages(),
+  ]);
 
   const publishedProjects = projects.filter((p) => p.published).length;
   const publishedJobs = jobs.filter((j) => j.published).length;
+  const totalPeople = applications.length + messages.length;
+  const unreadPeople =
+    applications.filter((a) => !a.read).length +
+    messages.filter((m) => !m.read).length;
 
   const stats = [
     {
@@ -23,6 +33,13 @@ export default async function AdminDashboard() {
       total: jobs.length,
       sub: `${publishedJobs} published · ${jobs.length - publishedJobs} draft`,
       blurb: "Open roles on the careers page.",
+    },
+    {
+      label: "People",
+      href: "/admin/people",
+      total: totalPeople,
+      sub: `${unreadPeople} unread · ${applications.length} applied · ${messages.length} messages`,
+      blurb: "Applications and contact-form messages.",
     },
     {
       label: "Content sections",
@@ -65,7 +82,7 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
           <Link key={s.label} href={s.href} className="card card-hover p-6">
             <p className="text-xs uppercase tracking-[0.2em] text-faint">{s.label}</p>

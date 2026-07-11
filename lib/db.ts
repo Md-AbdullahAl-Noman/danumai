@@ -65,6 +65,31 @@ async function initSchema() {
       updated_at timestamptz NOT NULL DEFAULT now()
     );
 
+    -- People who applied to an open role from the careers page. Captured
+    -- alongside the notification email so the admin panel has a durable record.
+    CREATE TABLE IF NOT EXISTS applications (
+      id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+      job_title text NOT NULL DEFAULT '',
+      name text NOT NULL,
+      email text NOT NULL,
+      portfolio text NOT NULL DEFAULT '',
+      note text NOT NULL DEFAULT '',
+      read boolean NOT NULL DEFAULT false,
+      created_at timestamptz NOT NULL DEFAULT now()
+    );
+
+    -- Messages sent through the public contact form, stored so they can be
+    -- triaged from the admin panel rather than living only in the inbox.
+    CREATE TABLE IF NOT EXISTS contact_messages (
+      id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+      name text NOT NULL,
+      email text NOT NULL,
+      topic text NOT NULL DEFAULT 'General',
+      message text NOT NULL DEFAULT '',
+      read boolean NOT NULL DEFAULT false,
+      created_at timestamptz NOT NULL DEFAULT now()
+    );
+
     -- Projects gained a published flag after the initial release; add it in a
     -- backwards-compatible way so existing databases pick it up on next boot.
     ALTER TABLE projects ADD COLUMN IF NOT EXISTS published boolean NOT NULL DEFAULT true;

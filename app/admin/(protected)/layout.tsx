@@ -20,6 +20,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <nav className="flex items-center gap-1 text-sm">
             <AdminNavLink href="/admin/projects">Projects</AdminNavLink>
             <AdminNavLink href="/admin/jobs">Jobs</AdminNavLink>
+            <AdminNavLink href="/admin/people">People</AdminNavLink>
             <AdminNavLink href="/admin/content">Content</AdminNavLink>
             <Link
               href="/"
