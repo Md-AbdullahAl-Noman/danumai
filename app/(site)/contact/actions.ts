@@ -1,6 +1,7 @@
 "use server";
 
 import { createContactMessage } from "@/lib/data/submissions";
+import { sendMail } from "@/lib/mailer";
 
 export type ContactState = {
   status: "success" | "error";
@@ -21,6 +22,20 @@ export async function sendContactMessage(
 
   try {
     await createContactMessage({ name, email, topic, message });
+
+    // Notify the site inbox. Don't fail the submission if the email can't be
+    // delivered — the message is already stored and visible in the admin panel.
+    try {
+      await sendMail({
+        to: process.env.GMAIL_USER!,
+        replyTo: email,
+        subject: `New contact message: ${topic}`,
+        text: `Name: ${name}\nEmail: ${email}\nTopic: ${topic}\n\n${message}`,
+      });
+    } catch (mailErr) {
+      console.error("contact notification email failed", mailErr);
+    }
+
     return { status: "success" };
   } catch (err) {
     console.error("createContactMessage failed", err);
