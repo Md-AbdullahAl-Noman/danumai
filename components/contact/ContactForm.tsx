@@ -37,6 +37,7 @@ export default function ContactForm() {
     if (result.status === "success") {
       setState("success");
       form.reset();
+      setTimeout(() => setState("idle"), 4000);
     } else {
       setState("idle");
       setError(result.message ?? "Something went wrong.");
