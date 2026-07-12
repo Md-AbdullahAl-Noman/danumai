@@ -53,12 +53,22 @@ export default function Services({
 function ServiceCard({ c }: { c: ServiceCategory }) {
   return (
     <SpotlightCard
-      style={{ "--card-accent": c.accent } as React.CSSProperties}
-      className="card card-hover card-topline flex h-full flex-col p-6 md:p-7"
+      style={
+        {
+          "--card-accent": c.accent,
+          // animated halo border (revealed on hover) tinted to the card accent,
+          // fading into transparency so it reads as a sweeping arc, not a ring
+          "--beam-color": c.accent,
+          "--beam-color-2": `${c.accent}00`,
+          "--beam-width": "1.5px",
+          "--beam-speed": "5.5s",
+        } as React.CSSProperties
+      }
+      className="card card-hover card-topline beam flex h-full flex-col p-6 md:p-7"
     >
       <div className="flex items-baseline gap-3">
         <span
-          className="font-display text-sm italic"
+          className="font-display text-sm italic transition-transform duration-500 group-hover:-translate-y-0.5"
           style={{ color: c.accent }}
         >
           {c.n}
@@ -71,14 +81,11 @@ function ServiceCard({ c }: { c: ServiceCategory }) {
       <p className="mt-3 text-sm leading-relaxed text-mist">{c.body}</p>
 
       <ul className="mt-6 flex flex-wrap gap-2">
-        {c.items.map((item) => (
+        {c.items.map((item, i) => (
           <li
             key={item}
-            className="rounded-full border px-3 py-1 text-[11px] tracking-[0.04em] text-mist transition-colors duration-300"
-            style={{
-              borderColor: `${c.accent}2e`,
-              background: `${c.accent}0d`,
-            }}
+            className="service-chip rounded-full px-3 py-1 text-[11px] tracking-[0.04em] text-mist will-change-transform"
+            style={{ transitionDelay: `${i * 40}ms` }}
           >
             {item}
           </li>
