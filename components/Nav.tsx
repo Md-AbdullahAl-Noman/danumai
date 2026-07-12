@@ -9,7 +9,9 @@ import MagneticButton from '@/components/ui/MagneticButton';
 const links = [
   { href: '/#ventures', label: 'Ventures' },
   { href: '/#approach', label: 'Approach' },
+  { href: '/#services', label: 'Services' },
   { href: '/#labs', label: 'Labs' },
+  { href: '/stories', label: 'Stories' },
   { href: '/careers', label: 'Careers' },
   { href: '/contact', label: 'Contact' },
 ];

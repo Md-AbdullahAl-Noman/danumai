@@ -84,6 +84,20 @@ function BriefcaseIcon() {
   );
 }
 
+function BookIcon() {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" aria-hidden className="h-4 w-4">
+      <path
+        d="M10 5.5C8.5 4 6 3.75 4 4.25V15c2-.5 4.5-.25 6 1.25M10 5.5c1.5-1.5 4-1.75 6-1.25V15c-2-.5-4.5-.25-6 1.25M10 5.5V16.5"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function ChatIcon() {
   return (
     <svg viewBox="0 0 20 20" fill="none" aria-hidden className="h-4 w-4">
@@ -150,6 +164,17 @@ export default async function Footer() {
                     <ChatIcon />
                   </span>
                   <span className="link-line">Contact us</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/stories"
+                  className="footer-nav-link group text-sm text-mist"
+                >
+                  <span className="footer-ico" aria-hidden>
+                    <BookIcon />
+                  </span>
+                  <span className="link-line">Stories</span>
                 </Link>
               </li>
               <li>

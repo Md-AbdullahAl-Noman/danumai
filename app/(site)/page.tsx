@@ -3,6 +3,7 @@ import Ticker from "@/components/sections/Ticker";
 import VentureShowcase from "@/components/sections/VentureShowcase";
 import Stats from "@/components/sections/Stats";
 import Approach from "@/components/sections/Approach";
+import Services from "@/components/sections/Services";
 import Labs from "@/components/sections/Labs";
 import Manifesto from "@/components/sections/Manifesto";
 import CTA from "@/components/sections/CTA";
@@ -33,6 +34,7 @@ export default async function Home() {
       <VentureShowcase projects={projects} header={content.ventures} />
       <Stats content={content.stats} />
       <Approach content={content.approach} />
+      <Services content={content.services} />
       <Labs content={content.labs} />
       <Manifesto content={content.manifesto} />
       <CTA content={content.cta} />

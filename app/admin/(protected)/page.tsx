@@ -1,19 +1,22 @@
 import Link from "next/link";
 import { listProjects } from "@/lib/data/projects";
 import { listJobs } from "@/lib/data/jobs";
+import { listStories } from "@/lib/data/stories";
 import { listApplications, listContactMessages } from "@/lib/data/submissions";
 import { SECTIONS } from "@/lib/content";
 
 export default async function AdminDashboard() {
-  const [projects, jobs, applications, messages] = await Promise.all([
+  const [projects, jobs, stories, applications, messages] = await Promise.all([
     listProjects(),
     listJobs(),
+    listStories(),
     listApplications(),
     listContactMessages(),
   ]);
 
   const publishedProjects = projects.filter((p) => p.published).length;
   const publishedJobs = jobs.filter((j) => j.published).length;
+  const publishedStories = stories.filter((s) => s.published).length;
   const totalPeople = applications.length + messages.length;
   const unreadPeople =
     applications.filter((a) => !a.read).length +
@@ -33,6 +36,13 @@ export default async function AdminDashboard() {
       total: jobs.length,
       sub: `${publishedJobs} published · ${jobs.length - publishedJobs} draft`,
       blurb: "Open roles on the careers page.",
+    },
+    {
+      label: "Stories",
+      href: "/admin/stories",
+      total: stories.length,
+      sub: `${publishedStories} published · ${stories.length - publishedStories} draft`,
+      blurb: "Posts on plans, goals, and vision.",
     },
     {
       label: "People",
@@ -71,6 +81,12 @@ export default async function AdminDashboard() {
             className="rounded-full border hairline px-4 py-2 text-sm text-paper hover:border-copper/40 hover:text-copper-soft"
           >
             + New job
+          </Link>
+          <Link
+            href="/admin/stories/new"
+            className="rounded-full border hairline px-4 py-2 text-sm text-paper hover:border-copper/40 hover:text-copper-soft"
+          >
+            + New story
           </Link>
           <Link
             href="/"

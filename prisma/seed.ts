@@ -3,32 +3,8 @@
 // Safe to re-run: existing rows (matched by slug) are left untouched.
 //
 // Usage: npm run seed   (requires DATABASE_URL in the environment or .env)
-
-import { readFileSync, existsSync } from "node:fs";
-import { Pool } from "pg";
-
-function loadDotEnv() {
-  if (process.env.DATABASE_URL) return;
-  if (!existsSync(".env")) return;
-  for (const line of readFileSync(".env", "utf8").split("\n")) {
-    const match = line.match(/^([A-Z0-9_]+)=(.*)$/);
-    if (match && !process.env[match[1]]) {
-      process.env[match[1]] = match[2].replace(/^["']|["']$/g, "");
-    }
-  }
-}
-
-loadDotEnv();
-
-if (!process.env.DATABASE_URL) {
-  console.error("DATABASE_URL is not set. Add it to .env or export it before running the seed.");
-  process.exit(1);
-}
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.PGSSL === "false" ? undefined : { rejectUnauthorized: false },
-});
+import "dotenv/config";
+import { prisma } from "../lib/prisma";
 
 const projects = [
   {
@@ -40,7 +16,7 @@ const projects = [
     status: "In development",
     features: ["Vertical serials", "Episode unlocks", "Creator tooling", "Offline-first"],
     accent: "#e11d48",
-    sort_order: 1,
+    sortOrder: 1,
   },
   {
     slug: "danumai-studios",
@@ -51,7 +27,7 @@ const projects = [
     status: "In development",
     features: ["Writers' room", "Vertical-first production", "Owned IP", "Fast cycles"],
     accent: "#7c3aed",
-    sort_order: 2,
+    sortOrder: 2,
   },
   {
     slug: "care-technology",
@@ -62,7 +38,7 @@ const projects = [
     status: "Research",
     features: ["Shift coordination", "Family updates", "Care logs", "Gentle reminders"],
     accent: "#0d9488",
-    sort_order: 3,
+    sortOrder: 3,
   },
 ];
 
@@ -80,7 +56,7 @@ const jobs = [
       "You've shipped and operated products, not just built them",
       "Care about motion, accessibility, and the last 5% of polish",
     ],
-    sort_order: 1,
+    sortOrder: 1,
   },
   {
     slug: "motion-designer",
@@ -95,7 +71,7 @@ const jobs = [
       "Comfortable working directly in the codebase with engineers",
       "Taste for restraint: one accent color, spacing over decoration",
     ],
-    sort_order: 2,
+    sortOrder: 2,
   },
   {
     slug: "content-producer",
@@ -109,72 +85,39 @@ const jobs = [
       "Fluent Bangla; deep feel for what the audience actually watches",
       "Scrappy: small crews, fast cycles, owned outcomes",
     ],
-    sort_order: 3,
+    sortOrder: 3,
   },
 ];
 
 async function main() {
-  try {
-    await pool.query(`CREATE EXTENSION IF NOT EXISTS pgcrypto;`);
-  } catch {
-    // ignore if restricted/already available
-  }
-
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS projects (
-      id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-      slug text UNIQUE NOT NULL,
-      name text NOT NULL,
-      tagline text NOT NULL DEFAULT '',
-      description text NOT NULL DEFAULT '',
-      status text NOT NULL DEFAULT '',
-      features jsonb NOT NULL DEFAULT '[]',
-      accent text NOT NULL DEFAULT '#d99a4e',
-      image_url text,
-      sort_order integer NOT NULL DEFAULT 0,
-      created_at timestamptz NOT NULL DEFAULT now(),
-      updated_at timestamptz NOT NULL DEFAULT now()
-    );
-
-    CREATE TABLE IF NOT EXISTS jobs (
-      id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-      slug text UNIQUE NOT NULL,
-      title text NOT NULL,
-      team text NOT NULL DEFAULT '',
-      location text NOT NULL DEFAULT '',
-      type text NOT NULL DEFAULT '',
-      summary text NOT NULL DEFAULT '',
-      points jsonb NOT NULL DEFAULT '[]',
-      published boolean NOT NULL DEFAULT true,
-      sort_order integer NOT NULL DEFAULT 0,
-      created_at timestamptz NOT NULL DEFAULT now(),
-      updated_at timestamptz NOT NULL DEFAULT now()
-    );
-  `);
-
   for (const p of projects) {
-    await pool.query(
-      `INSERT INTO projects (slug, name, tagline, description, status, features, accent, sort_order)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-       ON CONFLICT (slug) DO NOTHING`,
-      [p.slug, p.name, p.tagline, p.description, p.status, JSON.stringify(p.features), p.accent, p.sort_order]
-    );
+    // upsert with an empty update leaves existing rows untouched, matching the
+    // old `ON CONFLICT (slug) DO NOTHING` behaviour.
+    await prisma.project.upsert({
+      where: { slug: p.slug },
+      update: {},
+      create: p,
+    });
   }
 
   for (const j of jobs) {
-    await pool.query(
-      `INSERT INTO jobs (slug, title, team, location, type, summary, points, sort_order)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-       ON CONFLICT (slug) DO NOTHING`,
-      [j.slug, j.title, j.team, j.location, j.type, j.summary, JSON.stringify(j.points), j.sort_order]
-    );
+    await prisma.job.upsert({
+      where: { slug: j.slug },
+      update: {},
+      create: j,
+    });
   }
 
-  console.log(`Seeded ${projects.length} projects and ${jobs.length} jobs (existing slugs left untouched).`);
-  await pool.end();
+  console.log(
+    `Seeded ${projects.length} projects and ${jobs.length} jobs (existing slugs left untouched).`
+  );
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+main()
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

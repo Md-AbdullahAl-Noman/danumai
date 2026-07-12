@@ -1,5 +1,3 @@
-import { query } from "@/lib/db";
-
 type Orderable = { id: string; sortOrder: number };
 
 /** Move one row up or down within an ordered list by rewriting sort_order.
@@ -7,9 +5,10 @@ type Orderable = { id: string; sortOrder: number };
  *  The list may start with duplicate/zero sort_order values (the table
  *  default), so rather than swap two values we compute the desired final order
  *  and renumber every row to a clean 1..N sequence in a single pass. Safe
- *  no-op at the ends. */
+ *  no-op at the ends. The `update` callback persists one row's new sort_order,
+ *  keeping this helper agnostic of which Prisma model it's reordering. */
 export async function reorderSwap(
-  table: "projects" | "jobs",
+  update: (id: string, sortOrder: number) => Promise<unknown>,
   items: Orderable[],
   id: string,
   direction: "up" | "down"
@@ -23,9 +22,6 @@ export async function reorderSwap(
   [ordered[index], ordered[swapWith]] = [ordered[swapWith], ordered[index]];
 
   for (let i = 0; i < ordered.length; i++) {
-    await query(
-      `UPDATE ${table} SET sort_order = $2, updated_at = now() WHERE id = $1`,
-      [ordered[i].id, i + 1]
-    );
+    await update(ordered[i].id, i + 1);
   }
 }
