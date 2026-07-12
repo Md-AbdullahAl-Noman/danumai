@@ -1,4 +1,5 @@
-import { query } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
+import type { Job as JobModel } from "@/generated/prisma/client";
 import { reorderSwap } from "./reorder";
 
 export type Job = {
@@ -14,20 +15,7 @@ export type Job = {
   sortOrder: number;
 };
 
-type JobRow = {
-  id: string;
-  slug: string;
-  title: string;
-  team: string;
-  location: string;
-  type: string;
-  summary: string;
-  points: string[];
-  published: boolean;
-  sort_order: number;
-};
-
-function mapRow(row: JobRow): Job {
+function mapRow(row: JobModel): Job {
   return {
     id: row.id,
     slug: row.slug,
@@ -36,24 +24,23 @@ function mapRow(row: JobRow): Job {
     location: row.location,
     type: row.type,
     summary: row.summary,
-    points: row.points ?? [],
+    points: (row.points as string[]) ?? [],
     published: row.published,
-    sortOrder: row.sort_order,
+    sortOrder: row.sortOrder,
   };
 }
 
 export async function listJobs(opts: { publishedOnly?: boolean } = {}): Promise<Job[]> {
-  const res = opts.publishedOnly
-    ? await query<JobRow>(
-        `SELECT * FROM jobs WHERE published = true ORDER BY sort_order ASC, created_at ASC`
-      )
-    : await query<JobRow>(`SELECT * FROM jobs ORDER BY sort_order ASC, created_at ASC`);
-  return res.rows.map(mapRow);
+  const rows = await prisma.job.findMany({
+    where: opts.publishedOnly ? { published: true } : undefined,
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+  });
+  return rows.map(mapRow);
 }
 
 export async function getJob(id: string): Promise<Job | null> {
-  const res = await query<JobRow>(`SELECT * FROM jobs WHERE id = $1`, [id]);
-  return res.rows[0] ? mapRow(res.rows[0]) : null;
+  const row = await prisma.job.findUnique({ where: { id } });
+  return row ? mapRow(row) : null;
 }
 
 export type JobInput = {
@@ -69,57 +56,21 @@ export type JobInput = {
 };
 
 export async function createJob(input: JobInput): Promise<Job> {
-  const res = await query<JobRow>(
-    `INSERT INTO jobs (slug, title, team, location, type, summary, points, published, sort_order)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-     RETURNING *`,
-    [
-      input.slug,
-      input.title,
-      input.team,
-      input.location,
-      input.type,
-      input.summary,
-      JSON.stringify(input.points),
-      input.published,
-      input.sortOrder,
-    ]
-  );
-  return mapRow(res.rows[0]);
+  const row = await prisma.job.create({ data: input });
+  return mapRow(row);
 }
 
 export async function updateJob(id: string, input: JobInput): Promise<Job> {
-  const res = await query<JobRow>(
-    `UPDATE jobs SET
-       slug = $2, title = $3, team = $4, location = $5, type = $6,
-       summary = $7, points = $8, published = $9, sort_order = $10, updated_at = now()
-     WHERE id = $1
-     RETURNING *`,
-    [
-      id,
-      input.slug,
-      input.title,
-      input.team,
-      input.location,
-      input.type,
-      input.summary,
-      JSON.stringify(input.points),
-      input.published,
-      input.sortOrder,
-    ]
-  );
-  return mapRow(res.rows[0]);
+  const row = await prisma.job.update({ where: { id }, data: input });
+  return mapRow(row);
 }
 
 export async function deleteJob(id: string): Promise<void> {
-  await query(`DELETE FROM jobs WHERE id = $1`, [id]);
+  await prisma.job.delete({ where: { id } });
 }
 
 export async function setJobPublished(id: string, published: boolean): Promise<void> {
-  await query(
-    `UPDATE jobs SET published = $2, updated_at = now() WHERE id = $1`,
-    [id, published]
-  );
+  await prisma.job.update({ where: { id }, data: { published } });
 }
 
 /** Quick inline edit of the fields shown on the list row. */
@@ -127,13 +78,10 @@ export async function quickUpdateJob(
   id: string,
   fields: { title: string; team: string; sortOrder: number }
 ): Promise<void> {
-  await query(
-    `UPDATE jobs SET title = $2, team = $3, sort_order = $4, updated_at = now() WHERE id = $1`,
-    [id, fields.title, fields.team, fields.sortOrder]
-  );
+  await prisma.job.update({ where: { id }, data: fields });
 }
 
 export async function moveJob(id: string, direction: "up" | "down"): Promise<void> {
   const all = await listJobs();
-  await reorderSwap("jobs", all, id, direction);
+  await reorderSwap((id, sortOrder) => prisma.job.update({ where: { id }, data: { sortOrder } }), all, id, direction);
 }

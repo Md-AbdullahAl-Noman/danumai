@@ -65,6 +65,21 @@ export type LabsContent = {
   capabilities: LabsCapability[];
 };
 
+export type ServiceCategory = {
+  n: string;
+  title: string;
+  body: string;
+  items: string[];
+  accent: string;
+};
+export type ServicesContent = {
+  eyebrow: string;
+  heading: string;
+  accentWords: string[];
+  intro: string;
+  categories: ServiceCategory[];
+};
+
 export type ManifestoCard = { title: string; body: string; accent: string };
 export type ManifestoContent = {
   quoteLines: string[];
@@ -99,6 +114,7 @@ export type SiteContent = {
   ventures: VenturesHeaderContent;
   stats: StatsContent;
   approach: ApproachContent;
+  services: ServicesContent;
   labs: LabsContent;
   manifesto: ManifestoContent;
   cta: CtaContent;
@@ -169,6 +185,82 @@ export const DEFAULT_CONTENT: SiteContent = {
         n: "04",
         title: "Patience over hype",
         body: "We pick markets we understand deeply and commit for years. Compounding beats momentum, in products as in everything else.",
+      },
+    ],
+  },
+  services: {
+    eyebrow: "Our Services",
+    heading: "Branding, Design, Web Solutions.",
+    accentWords: ["Design", "Solutions"],
+    intro:
+      "Danumai delivers tailored branding, innovative design, and custom web solutions that drive business growth. Our expertise in UI/UX design, video editing, digital marketing, and website development ensures seamless digital experiences that empower your brand to thrive in a competitive market.",
+    categories: [
+      {
+        n: "01",
+        title: "Video Editing",
+        body: "Cinematic edits, motion, and sound that make every frame land.",
+        items: [
+          "Video Production",
+          "Audio & Video Mastering",
+          "Animations",
+          "Transitions",
+          "Professional Voice Over",
+          "Royalty-Free Music",
+        ],
+        accent: "#e0402f",
+      },
+      {
+        n: "02",
+        title: "UI/UX Design",
+        body: "Interfaces understood at a glance and loved in use.",
+        items: [
+          "SaaS Design",
+          "Web Design",
+          "Mobile App Design",
+          "Software Design",
+          "Wireframe",
+          "Prototype",
+        ],
+        accent: "#4f46e5",
+      },
+      {
+        n: "03",
+        title: "Website Design",
+        body: "Sites and stores engineered to convert, first pixel to checkout.",
+        items: [
+          "Landing Page",
+          "eCommerce Solutions",
+          "LMS Solutions",
+          "Blog & Newspaper",
+          "Custom Solutions",
+        ],
+        accent: "#0d9488",
+      },
+      {
+        n: "04",
+        title: "Graphic Design",
+        body: "Identity systems that make a brand unmistakable everywhere.",
+        items: [
+          "Brand Identities",
+          "Logo Design",
+          "Stationery Design",
+          "Social Media Design",
+          "Design Solutions",
+        ],
+        accent: "#d97706",
+      },
+      {
+        n: "05",
+        title: "Digital Marketing",
+        body: "Reach the right audience and climb the rankings that matter.",
+        items: [
+          "SEO",
+          "SMM",
+          "Facebook Ads",
+          "Google Ads",
+          "Google Ranking",
+        ],
+        accent: "#7c3aed",
       },
     ],
   },
@@ -360,6 +452,30 @@ export const SECTIONS: SectionSchema[] = [
           { name: "n", label: "Number", type: "text", placeholder: "01" },
           { name: "title", label: "Title", type: "text" },
           { name: "body", label: "Body", type: "textarea" },
+        ],
+      },
+    ],
+  },
+  {
+    key: "services",
+    label: "Services",
+    description: "The premium service catalogue — categories, each with a list of offerings.",
+    fields: [
+      { name: "eyebrow", label: "Eyebrow", type: "text" },
+      { name: "heading", label: "Heading", type: "text" },
+      { name: "accentWords", label: "Accent words", type: "list" },
+      { name: "intro", label: "Intro", type: "textarea" },
+      {
+        name: "categories",
+        label: "Categories",
+        type: "group",
+        itemNoun: "category",
+        fields: [
+          { name: "n", label: "Number", type: "text", placeholder: "01" },
+          { name: "title", label: "Title", type: "text" },
+          { name: "body", label: "Body", type: "textarea" },
+          { name: "items", label: "Offerings", type: "list" },
+          { name: "accent", label: "Accent", type: "color" },
         ],
       },
     ],

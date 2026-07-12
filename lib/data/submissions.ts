@@ -1,4 +1,8 @@
-import { query } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
+import type {
+  Application as ApplicationModel,
+  ContactMessage as ContactMessageModel,
+} from "@/generated/prisma/client";
 
 // Submissions are the "people" side of the site: job applications from the
 // careers page and messages from the contact form. They share the same shape
@@ -16,27 +20,16 @@ export type Application = {
   createdAt: string;
 };
 
-type ApplicationRow = {
-  id: string;
-  job_title: string;
-  name: string;
-  email: string;
-  portfolio: string;
-  note: string;
-  read: boolean;
-  created_at: string;
-};
-
-function mapApplication(row: ApplicationRow): Application {
+function mapApplication(row: ApplicationModel): Application {
   return {
     id: row.id,
-    jobTitle: row.job_title,
+    jobTitle: row.jobTitle,
     name: row.name,
     email: row.email,
     portfolio: row.portfolio,
     note: row.note,
     read: row.read,
-    createdAt: row.created_at,
+    createdAt: row.createdAt.toISOString(),
   };
 }
 
@@ -50,17 +43,7 @@ export type ContactMessage = {
   createdAt: string;
 };
 
-type ContactMessageRow = {
-  id: string;
-  name: string;
-  email: string;
-  topic: string;
-  message: string;
-  read: boolean;
-  created_at: string;
-};
-
-function mapContactMessage(row: ContactMessageRow): ContactMessage {
+function mapContactMessage(row: ContactMessageModel): ContactMessage {
   return {
     id: row.id,
     name: row.name,
@@ -68,7 +51,7 @@ function mapContactMessage(row: ContactMessageRow): ContactMessage {
     topic: row.topic,
     message: row.message,
     read: row.read,
-    createdAt: row.created_at,
+    createdAt: row.createdAt.toISOString(),
   };
 }
 
@@ -81,26 +64,22 @@ export async function createApplication(input: {
   portfolio: string;
   note: string;
 }): Promise<void> {
-  await query(
-    `INSERT INTO applications (job_title, name, email, portfolio, note)
-     VALUES ($1, $2, $3, $4, $5)`,
-    [input.jobTitle, input.name, input.email, input.portfolio, input.note]
-  );
+  await prisma.application.create({ data: input });
 }
 
 export async function listApplications(): Promise<Application[]> {
-  const res = await query<ApplicationRow>(
-    `SELECT * FROM applications ORDER BY created_at DESC`
-  );
-  return res.rows.map(mapApplication);
+  const rows = await prisma.application.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+  return rows.map(mapApplication);
 }
 
 export async function setApplicationRead(id: string, read: boolean): Promise<void> {
-  await query(`UPDATE applications SET read = $2 WHERE id = $1`, [id, read]);
+  await prisma.application.update({ where: { id }, data: { read } });
 }
 
 export async function deleteApplication(id: string): Promise<void> {
-  await query(`DELETE FROM applications WHERE id = $1`, [id]);
+  await prisma.application.delete({ where: { id } });
 }
 
 // --- Contact messages -----------------------------------------------------
@@ -111,24 +90,20 @@ export async function createContactMessage(input: {
   topic: string;
   message: string;
 }): Promise<void> {
-  await query(
-    `INSERT INTO contact_messages (name, email, topic, message)
-     VALUES ($1, $2, $3, $4)`,
-    [input.name, input.email, input.topic, input.message]
-  );
+  await prisma.contactMessage.create({ data: input });
 }
 
 export async function listContactMessages(): Promise<ContactMessage[]> {
-  const res = await query<ContactMessageRow>(
-    `SELECT * FROM contact_messages ORDER BY created_at DESC`
-  );
-  return res.rows.map(mapContactMessage);
+  const rows = await prisma.contactMessage.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+  return rows.map(mapContactMessage);
 }
 
 export async function setContactMessageRead(id: string, read: boolean): Promise<void> {
-  await query(`UPDATE contact_messages SET read = $2 WHERE id = $1`, [id, read]);
+  await prisma.contactMessage.update({ where: { id }, data: { read } });
 }
 
 export async function deleteContactMessage(id: string): Promise<void> {
-  await query(`DELETE FROM contact_messages WHERE id = $1`, [id]);
+  await prisma.contactMessage.delete({ where: { id } });
 }

@@ -20,28 +20,27 @@ export async function sendContactMessage(
     return { status: "error", message: "Please fill in every field." };
   }
 
+  // Persist first so the message is recorded in the admin panel even if the
+  // notification email later fails to send.
   try {
     await createContactMessage({ name, email, topic, message });
-
-    // Notify the site inbox. Don't fail the submission if the email can't be
-    // delivered — the message is already stored and visible in the admin panel.
-    try {
-      await sendMail({
-        to: process.env.GMAIL_USER!,
-        replyTo: email,
-        subject: `New contact message: ${topic}`,
-        text: `Name: ${name}\nEmail: ${email}\nTopic: ${topic}\n\n${message}`,
-      });
-    } catch (mailErr) {
-      console.error("contact notification email failed", mailErr);
-    }
-
-    return { status: "success" };
   } catch (err) {
     console.error("createContactMessage failed", err);
+  }
+
+  try {
+    await sendMail({
+      to: process.env.NOTIFY_EMAIL ?? process.env.GMAIL_USER!,
+      replyTo: email,
+      subject: `[${topic}] Message from ${name}`,
+      text: `${message}\n\n—\n${name}\n${email}`,
+    });
+    return { status: "success" };
+  } catch (err) {
+    console.error("sendContactMessage failed", err);
     return {
       status: "error",
-      message: "Something went wrong. Try again.",
+      message: "Something went wrong. Try again or email us directly.",
     };
   }
 }
